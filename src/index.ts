@@ -46,7 +46,7 @@ app.get('/test', (c) => {
 })
 
 const port = 3150
-console.log(`[Hono] Ready! Listening port ${port}`)
+console.log(`Listening port ${port}`)
 
 serve({
   fetch: app.fetch,
@@ -62,6 +62,7 @@ process.on('SIGTERM', shutdown)
 async function shutdown() {
   console.log('Shutdown...')
   db.close();
+  console.log('[SQLite] Closed')
   console.log('Goodbye')
   process.exit(0)
 }
