@@ -41,6 +41,7 @@ app.get('/test', async (c, next) => {
   //Context is not finalized
   await db.serialize(() => {
       db.all("select * from mebers", (err, rows) => {
+        console.log(JSON.stringify(rows))
         return c.json({
           "Result": JSON.stringify(rows)
         })
