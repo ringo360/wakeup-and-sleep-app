@@ -38,20 +38,13 @@ app.get('/', (c) => {
 })
 
 app.get('/test', async (c) => {
-  try {
-    await db.serialize(() => {
+  db.serialize(() => {
       db.all("select * from mebers", (err, rows) => {
         return c.json({
           "Result": JSON.stringify(rows)
         })
       })
-    })
-  } catch (e) {
-    console.log(e)
-    return c.json({
-      "Error": "Internal Server Error"
-    }, 500)
-  }
+  })
 })
 
 const port = 3150
