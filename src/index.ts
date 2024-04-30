@@ -33,7 +33,7 @@ app.get('/', (c) => {
 })
 
 app.get('/test', (c) => {
-  const rows = db.get("select * from members")
+  const rows = db.all("select * from members")
   if (rows) {
     return c.json({
       "Result": JSON.stringify(rows)
