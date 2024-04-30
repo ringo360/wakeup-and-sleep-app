@@ -17,7 +17,7 @@ app.get('/', (c) => {
 
 app.get('/test', (c) => {
   const result = items.findOne({a: 1})
-  return c.text(result)
+  return c.text(result.a)
 })
 
 const port = 3150
