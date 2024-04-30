@@ -5,7 +5,7 @@
   "dependencies": {
     "@hono/node-server": "^1.11.1",
     "hono": "^4.2.9",
-    "sqlite3": "^5.1.7"
+    "lokijs": "^1.5.12"
   },
   "devDependencies": {
     "@types/node": "^20.11.17",
