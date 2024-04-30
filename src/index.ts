@@ -24,7 +24,7 @@ db.serialize(() => {
   console.log('[SQLite3] Ready!')
 });
 
-db.close();
+
 
 const app = new Hono()
 
@@ -52,3 +52,16 @@ serve({
   fetch: app.fetch,
   port
 })
+
+
+//STOP
+
+process.on('SIGINT', shutdown)
+process.on('SIGTERM', shutdown)
+
+async function shutdown() {
+  console.log('Shutdown...')
+  db.close();
+  console.log('Goodbye')
+  process.exit(0)
+}
