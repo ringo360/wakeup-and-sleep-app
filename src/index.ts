@@ -9,6 +9,8 @@ const items = db.addCollection('test')
 items.insert({a: 1, b:2})
 items.insert({a: 2, b:3})
 
+db.saveDatabase()
+
 const app = new Hono()
 
 app.get('/', (c) => {
