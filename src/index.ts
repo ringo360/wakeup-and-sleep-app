@@ -28,6 +28,18 @@ db.serialize(() => {
   console.log('[SQLite3] Ready!')
 });
 
+console.log('Again')
+db.all("select * from members", (err, rows) => {
+  console.log(JSON.stringify(rows));
+});
+
+console.log('Pattern 2')
+db.serialize(() => {
+  db.all("select * from members", (err, rows) => {
+    console.log(JSON.stringify(rows));
+  });
+})
+
 //Hono
 const app = new Hono()
 
