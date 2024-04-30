@@ -1,7 +1,30 @@
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
+import sqlite3 from 'sqlite3'
 
+const db = new sqlite3.Database('./db/database.db')
 
+db.serialize(() => {
+  db.run("drop table if exists members");
+  db.run("create table if not exists members(name,age)");
+  db.run("insert into members(name,age) values(?,?)", "hoge", 33);
+  db.run("insert into members(name,age) values(?,?)", "foo", 44);
+  db.run("update members set age = ? where name = ?", 55, "foo");
+  /*
+  db.each("select * from members", (err, row) => {
+      console.log(`${row.name} ${row.age}`);
+  });
+  db.all("select * from members", (err, rows) => {
+      console.log(JSON.stringify(rows));
+  });
+  db.get("select count(*) from members", (err, count) => {
+      console.log(count["count(*)"]);
+  })
+  */
+  console.log('[SQLite3] Ready!')
+});
+
+db.close();
 
 const app = new Hono()
 
@@ -10,11 +33,20 @@ app.get('/', (c) => {
 })
 
 app.get('/test', (c) => {
-  //fetch data from sqlite3
+  const rows = db.get("select * from members")
+  if (rows) {
+    return c.json({
+      "Result": JSON.stringify(rows)
+    })
+  } else {
+    return c.json({
+      "Error": "Internal Error"
+    }, 500)
+  }
 })
 
 const port = 3150
-console.log(`Server is running on port ${port}`)
+console.log(`[Hono] Ready! Listening port ${port}`)
 
 serve({
   fetch: app.fetch,
