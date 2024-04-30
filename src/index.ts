@@ -15,9 +15,12 @@ db.serialize(() => {
   db.each("select * from members", (err, row) => {
       console.log(`${row.name} ${row.age}`);
   });
+  */
+ 
   db.all("select * from members", (err, rows) => {
       console.log(JSON.stringify(rows));
   });
+  /*
   db.get("select count(*) from members", (err, count) => {
       console.log(count["count(*)"]);
   })
