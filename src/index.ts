@@ -1,9 +1,10 @@
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
+import { logger } from 'hono/logger'
 import sqlite3 from 'sqlite3'
 
+//SQLite3
 const db = new sqlite3.Database('./db/database.db')
-
 db.serialize(() => {
   db.run("drop table if exists members");
   db.run("create table if not exists members(name,age)");
@@ -24,9 +25,10 @@ db.serialize(() => {
   console.log('[SQLite3] Ready!')
 });
 
-
-
+//Hono
 const app = new Hono()
+
+app.use(logger())
 
 app.get('/', (c) => {
   return c.text('Hello Hono!')
