@@ -8,7 +8,6 @@ const items = db.addCollection('test')
 
 items.insert({a: 1, b:2})
 items.insert({a: 2, b:3})
-items.saveToDisk()
 
 const app = new Hono()
 
