@@ -38,14 +38,18 @@ app.get('/', (c) => {
 })
 
 app.get('/test', (c) => {
-  const rows = db.all("select * from members")
-  if (rows) {
-    return c.json({
-      "Result": JSON.stringify(rows)
+  try {
+    db.serialize(() => {
+      db.all("select * from mebers", (err, rows) => {
+        return c.json({
+          "Result": JSON.stringify(rows)
+        })
+      })
     })
-  } else {
+  } catch (e) {
+    console.log(e)
     return c.json({
-      "Error": "Internal Error"
+      "Error": "Internal Server Error"
     }, 500)
   }
 })
