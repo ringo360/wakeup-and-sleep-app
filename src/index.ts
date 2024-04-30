@@ -37,7 +37,8 @@ app.get('/', (c) => {
   return c.text('Hello Hono!')
 })
 
-app.get('/test', async (c) => {
+app.get('/test', async (c, next) => {
+  //Context is not finalized
   db.serialize(() => {
       db.all("select * from mebers", (err, rows) => {
         return c.json({
@@ -45,6 +46,7 @@ app.get('/test', async (c) => {
         })
       })
   })
+  await next()
 })
 
 const port = 3150
