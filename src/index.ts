@@ -2,7 +2,7 @@ import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
 import loki from 'lokijs'
 
-const db =new loki('./db/loki.json')
+const db =new loki('./db/loki.json',{ autoupdate: true })
 
 const items = db.addCollection('test')
 
