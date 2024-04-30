@@ -37,9 +37,9 @@ app.get('/', (c) => {
   return c.text('Hello Hono!')
 })
 
-app.get('/test', (c) => {
+app.get('/test', async (c) => {
   try {
-    db.serialize(() => {
+    await db.serialize(() => {
       db.all("select * from mebers", (err, rows) => {
         return c.json({
           "Result": JSON.stringify(rows)
