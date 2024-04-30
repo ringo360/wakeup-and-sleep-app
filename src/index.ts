@@ -2,19 +2,21 @@ import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
 import loki from 'lokijs'
 
-const db =new loki('loki.json',{ autosave: true, autoload: false, autoupdate: true })
+const db =new loki('db/loki.json',{ autosave: true, autoload: false, autoupdate: true })
 
 const items = db.addCollection('test')
 
 items.insert({a: 1, b:2})
 items.insert({a: 2, b:3})
 
+/*
 try {
   db.saveDatabase()
   console.log('Saved')
 } catch (e) {
   console.log('Something went wrong: ' + e)
 }
+*/
 
 const app = new Hono()
 
