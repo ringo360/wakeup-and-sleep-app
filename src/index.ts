@@ -52,20 +52,15 @@ app.get('/', (c) => {
 app.get('/test', async (c, next) => {
   //Context is not finalized
   console.log('Awaiting')
-  try {
-    console.log('fetching')
-    await fetchdb()
-      .then(res => c.json(res))
-    return;
-  } catch (e) {
-    throw new Error(`Something went wrong: ${e}`)
-  }
+  const res = await fetchdb()
   console.log('OK')
+  return c.json(res)
   // await next()
 })
 
 async function fetchdb() {
-  db.all("select * from members", (err, rows) => {
+  console.log('Called')
+  await db.all("select * from members", (err, rows) => {
     console.log('Processing')
     const result = JSON.stringify(rows)
     // console.log(JSON.stringify(rows))
