@@ -5,7 +5,9 @@ import Database from 'better-sqlite3'
 
 //SQLite3
 // const db = new sqlite3.Database('./db/database.db') old code
-const db = new Database('./db/database.db', options)
+const db = new Database('./db/database.db')
+
+//READ https://github.com/WiseLibs/better-sqlite3/
 
 function init() {
   db.exec("drop table if exists members");
