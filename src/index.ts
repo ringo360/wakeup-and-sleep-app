@@ -49,20 +49,25 @@ app.get('/', (c) => {
   return c.text('Hello Hono!')
 })
 
-app.get('/test', (c, next) => {
+app.get('/test', async (c, next) => {
   //Context is not finalized
   console.log('Awaiting')
-  db.all("select * from members", (err, rows) => {
+  const res = await fetchdb()
+  console.log('OK')
+  return c.json({
+    res //or...?
+  })
+  // await next()
+})
+
+async function fetchdb() {
+  await db.all("select * from members", (err, rows) => {
     console.log('Processing')
     const result = JSON.stringify(rows)
     console.log(JSON.stringify(rows))
-    return c.json({
-      "Result": result
-    }, 200)
+    return result;
   })
-  console.log('OK')
-  // await next()
-})
+}
 
 const port = 3150
 console.log(`Listening port ${port}`)
