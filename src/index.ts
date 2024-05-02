@@ -49,10 +49,10 @@ app.get('/', (c) => {
   return c.text('Hello Hono!')
 })
 
-app.get('/test', async (c, next) => {
+app.get('/test', (c, next) => {
   //Context is not finalized
   console.log('Awaiting')
-  await db.all("select * from members", (err, rows) => {
+  db.all("select * from members", (err, rows) => {
     console.log('Processing')
     const result = JSON.stringify(rows)
     console.log(JSON.stringify(rows))
@@ -61,7 +61,7 @@ app.get('/test', async (c, next) => {
     }, 200)
   })
   console.log('OK')
-  await next()
+  // await next()
 })
 
 const port = 3150
