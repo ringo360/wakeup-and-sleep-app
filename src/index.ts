@@ -53,17 +53,10 @@ app.get('/test', async (c, next) => {
   //Context is not finalized
   console.log('Awaiting')
   const res = await fetchdb()
+  console.log(`RESULT: ${res}`)
   console.log('OK')
   return c.json(res)
   // await next()
-})
-
-app.get('/test2', (c, next) => {
-  console.log('Called')
-  const res = db.all("select * from members")
-  const x = JSON.stringify(res.rows)
-  console.log(res)
-  console.log(x)
 })
 
 async function fetchdb() {
