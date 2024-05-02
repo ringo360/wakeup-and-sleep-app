@@ -49,10 +49,10 @@ app.get('/', (c) => {
   return c.text('Hello Hono!')
 })
 
-app.get('/test', async (c, next) => {
+app.get('/test', (c, next) => {
   //Context is not finalized
   console.log('Awaiting')
-  const res = await fetchdb()
+  const res = fetchdb()
   console.log('OK')
   return c.json({
     res //or...?
@@ -60,7 +60,7 @@ app.get('/test', async (c, next) => {
   // await next()
 })
 
-async function fetchdb() {
+function fetchdb() {
   await db.all("select * from members", (err, rows) => {
     console.log('Processing')
     const result = JSON.stringify(rows)
