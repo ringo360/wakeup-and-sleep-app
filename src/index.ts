@@ -59,11 +59,15 @@ app.get('/test', async (c, next) => {
 })
 
 async function fetchdb() {
+  const start = new Date()
   console.log('Called')
   await db.all("select * from members", (err, rows) => {
     console.log('Processing')
     const result = JSON.stringify(rows)
     // console.log(JSON.stringify(rows))
+    const end = new Date()
+    const diff = end - start
+    console.log(diff)
     return result;
   })
 }
