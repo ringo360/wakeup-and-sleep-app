@@ -67,10 +67,12 @@ app.get('/', (c) => {
   return c.text('Hello Hono!')
 })
 
+// read the: https://gist.github.com/bonniss/2fb3853640510b697ca38255ec6bd282
+
 app.get('/test', async (c, next) => {
   //Context is not finalized
   console.log('Awaiting')
-  const res = await db.exec('select * from members')
+  const res = await db.prepare('select * from members').get()
   console.log(res)
   console.log('OK')
   return c.json({
