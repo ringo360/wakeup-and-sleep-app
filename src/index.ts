@@ -34,11 +34,17 @@ db.all("select * from members", (err, rows) => {
 });
 
 console.log('Pattern 2')
-db.serialize(() => {
-  db.all("select * from members", (err, rows) => {
-    console.log(JSON.stringify(rows));
-  });
-})
+
+const x = fetchx()
+console.log(x)
+
+function fetchx() {
+  db.serialize(() => {
+    db.all("select * from members", (err, rows) => {
+      return JSON.stringify(rows)
+    });
+  })
+}
 
 //Hono
 const app = new Hono()
@@ -52,8 +58,7 @@ app.get('/', (c) => {
 app.get('/test', async (c, next) => {
   //Context is not finalized
   console.log('Awaiting')
-  const res = await fetchdb()
-  console.log(`RESULT: ${res}`)
+  
   console.log('OK')
   return c.json(res)
   // await next()
