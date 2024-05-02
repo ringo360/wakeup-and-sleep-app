@@ -21,9 +21,9 @@ function init() {
   });
   */
  
-  db.prepare("select * from members", (err, rows) => {
-      console.log(JSON.stringify(rows));
-  });
+  const res = db.prepare("select * from members")
+  console.log(res)
+  console.log(JSON.stringify(res))
   /*
   db.get("select count(*) from members", (err, count) => {
       console.log(count["count(*)"]);
@@ -36,9 +36,9 @@ console.log('Loading...')
 init()
 
 console.log('Again')
-db.prepare("select * from members", (err, rows) => {
-  console.log(JSON.stringify(rows));
-});
+const dev_x = db.prepare("select * from members")
+console.log(dev_x)
+console.log(JSON.stringify(dev_x))
 
 console.log('Pattern 2 (nothing)')
 
