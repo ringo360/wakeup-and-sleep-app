@@ -77,14 +77,19 @@ app.get('/test', async (c, next) => {
 
 app.get('/find/:user', async (c) => {
   const target = c.req.param('user')
-  const x= db.prepare('select * from members')
-  for (const t of x.iterate()) {
-    if(t.name === target) {
-      c.json({
-        "name": t.name,
-        "age": t.age
-      })
+  console.log(`Finding ${target}`)
+  try {
+    const x= await db.prepare('select * from members')
+    for (const t of x.iterate()) {
+      if(t.name === target) {
+        c.json({
+          "name": t.name,
+          "age": t.age
+        })
+      }
     }
+  } catch (e) {
+    console.log(e)
   }
 })
 
