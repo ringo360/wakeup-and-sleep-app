@@ -79,10 +79,16 @@ app.get('/find/:user', async (c) => {
   const target = c.req.param('user')
   console.log(`Finding ${target}`)
   const x = await findusr(target)
-  return c.json({
-    "user": x.name,
-    "age": x.age
-  })
+  if (x.name) {
+    return c.json({
+      "user": x.name,
+      "age": x.age
+    })
+  } else {
+    return c.json({
+      "error": `cannot find ${target}`
+    }, 404)
+  }
 })
 
 async function findusr(target) {
@@ -93,6 +99,7 @@ async function findusr(target) {
       return t
     }
   }
+  return 'not found'
 }
 
 const port = 3150
