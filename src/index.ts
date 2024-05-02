@@ -52,7 +52,7 @@ app.get('/', (c) => {
 app.get('/test', (c, next) => {
   //Context is not finalized
   console.log('Awaiting')
-  const res = fetchdb()
+  const res = new Promise(fetchdb())
   console.log('OK')
   return c.json({
     res //or...?
