@@ -70,7 +70,7 @@ app.get('/', (c) => {
 app.get('/test', async (c, next) => {
   //Context is not finalized
   console.log('Awaiting')
-  const res = await exec('select * from members')
+  const res = await db.exec('select * from members')
   console.log(res)
   console.log('OK')
   return c.json({
