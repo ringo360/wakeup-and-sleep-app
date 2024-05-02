@@ -61,7 +61,7 @@ app.get('/test', async (c, next) => {
 app.get('/test2', (c, next) => {
   console.log('Called')
   const res = db.all("select * from members")
-  const x = JSON.stringify(res)
+  const x = JSON.stringify(res.rows)
   console.log(res)
   console.log(x)
 })
