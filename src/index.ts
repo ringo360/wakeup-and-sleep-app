@@ -40,6 +40,20 @@ const dev_x = db.prepare("select * from members")
 console.log(dev_x)
 console.log(JSON.stringify(dev_x))
 
+/*
+dev_x is:
+
+Statement {
+  busy: false,
+  reader: true,
+  readonly: true,
+  source: 'select * from members'
+  ...
+  (read the server log)
+}
+
+*/
+
 console.log('Pattern 2 (nothing)')
 
 //write
@@ -56,25 +70,11 @@ app.get('/', (c) => {
 app.get('/test', async (c, next) => {
   //Context is not finalized
   console.log('Awaiting')
-  
+  const res = await db.prepare('select * from members')
   console.log('OK')
-  return c.json(res)
+  return c.json(JSON.stringify(res))
   // await next()
 })
-
-async function fetchdb() {
-  const start = new Date()
-  console.log('Called')
-  await db.prepare("select * from members", (err, rows) => {
-    console.log('Processing')
-    const result = JSON.stringify(rows)
-    // console.log(JSON.stringify(rows))
-    const end = new Date()
-    const diff = end - start
-    console.log(diff)
-    return result;
-  })
-}
 
 const port = 3150
 console.log(`Listening port ${port}`)
