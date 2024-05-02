@@ -21,7 +21,7 @@ function init() {
   });
   */
  
-  const res = db.prepare("select * from members")
+  const res = db.prepare("select * from members").get()
   console.log(res)
   console.log(JSON.stringify(res))
   /*
@@ -36,23 +36,11 @@ console.log('Loading...')
 init()
 
 console.log('Again')
-const dev_x = db.prepare("select * from members")
+const dev_x = db.prepare("select * from members").get()
 console.log(dev_x)
 console.log(JSON.stringify(dev_x))
 
-/*
-dev_x is:
 
-Statement {
-  busy: false,
-  reader: true,
-  readonly: true,
-  source: 'select * from members'
-  ...
-  (read the server log)
-}
-
-*/
 
 console.log('Pattern 2 (nothing)')
 
