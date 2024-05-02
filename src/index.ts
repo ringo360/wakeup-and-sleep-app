@@ -72,7 +72,7 @@ app.get('/test', async (c, next) => {
   console.log('Awaiting')
   const res = await db.prepare('select * from members')
   console.log('OK')
-  return c.json(JSON.stringify(res))
+  return c.json({res})
   // await next()
 })
 
