@@ -51,8 +51,9 @@ app.get('/', (c) => {
 
 app.get('/test', async (c, next) => {
   //Context is not finalized
+  console.log('Awaiting')
   await db.serialize(() => {
-      db.all("select * from members", (err, rows) => {
+      await db.all("select * from members", (err, rows) => {
         const result = JSON.stringify(rows)
         console.log(JSON.stringify(rows))
         return c.json({
@@ -60,6 +61,7 @@ app.get('/test', async (c, next) => {
         }, 200)
       })
   })
+  console.log('OK')
   await next()
 })
 
