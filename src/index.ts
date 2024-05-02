@@ -1,23 +1,25 @@
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
 import { logger } from 'hono/logger'
-import sqlite3 from 'sqlite3'
+import Database from 'better-sqlite3'
 
 //SQLite3
-const db = new sqlite3.Database('./db/database.db')
-db.serialize(() => {
-  db.run("drop table if exists members");
-  db.run("create table if not exists members(name,age)");
-  db.run("insert into members(name,age) values(?,?)", "hoge", 33);
-  db.run("insert into members(name,age) values(?,?)", "foo", 44);
-  db.run("update members set age = ? where name = ?", 55, "foo");
+// const db = new sqlite3.Database('./db/database.db') old code
+const db = new Database('./db/database.db', options)
+
+function init() {
+  db.exec("drop table if exists members");
+  db.exec("create table if not exists members(name,age)");
+  db.exec("insert into members(name,age) values(?,?)", "hoge", 33);
+  db.exec("insert into members(name,age) values(?,?)", "foo", 44);
+  db.exec("update members set age = ? where name = ?", 55, "foo");
   /*
   db.each("select * from members", (err, row) => {
       console.log(`${row.name} ${row.age}`);
   });
   */
  
-  db.all("select * from members", (err, rows) => {
+  db.prepare("select * from members", (err, rows) => {
       console.log(JSON.stringify(rows));
   });
   /*
@@ -26,25 +28,19 @@ db.serialize(() => {
   })
   */
   console.log('[SQLite3] Ready!')
-});
+}
+
+console.log('Loading...')
+init()
 
 console.log('Again')
-db.all("select * from members", (err, rows) => {
+db.prepare("select * from members", (err, rows) => {
   console.log(JSON.stringify(rows));
 });
 
-console.log('Pattern 2')
+console.log('Pattern 2 (nothing)')
 
-const x = fetchx()
-console.log(x)
-
-function fetchx() {
-  db.serialize(() => {
-    db.all("select * from members", (err, rows) => {
-      return JSON.stringify(rows)
-    });
-  })
-}
+//write
 
 //Hono
 const app = new Hono()
@@ -67,7 +63,7 @@ app.get('/test', async (c, next) => {
 async function fetchdb() {
   const start = new Date()
   console.log('Called')
-  await db.all("select * from members", (err, rows) => {
+  await db.prepare("select * from members", (err, rows) => {
     console.log('Processing')
     const result = JSON.stringify(rows)
     // console.log(JSON.stringify(rows))
