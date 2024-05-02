@@ -61,7 +61,7 @@ app.get('/test', (c, next) => {
 })
 
 function fetchdb() {
-  await db.all("select * from members", (err, rows) => {
+  db.all("select * from members", (err, rows) => {
     console.log('Processing')
     const result = JSON.stringify(rows)
     console.log(JSON.stringify(rows))
