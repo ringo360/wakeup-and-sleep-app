@@ -13,6 +13,9 @@ function init() {
   
   db.exec("drop table if exists members");
   db.exec("create table if not exists members(name,age)");
+
+  db.exec("drop table if exists members"); //need to delete this
+  db.exec("create table if not exists userdb(name,password)");
   /*
   db.exec("insert into members(name,age) values(?,?)", "hoge", 33);
   db.exec("insert into members(name,age) values(?,?)", "foo", 44);
@@ -60,6 +63,34 @@ app.get('/', (c) => {
 })
 
 // read the: https://gist.github.com/bonniss/2fb3853640510b697ca38255ec6bd282
+
+
+
+app.post('/v1/user', async (c) => {
+  try {
+    const body = await c.req.parseBody()
+    const { username, password } = body
+    if (!username || !password) {
+      return c.json({
+        "Error": "Invalid body(need username and password)"
+      }, 400) //read http.cat
+    } else {
+      const check = await findusr(username)
+      if (check.name) {
+        return c.json({
+          "Error": "This username already exists!"
+        }, 400)
+      } else {
+        const x = db.prepare('insert into userdb(name,password) values (?,?)')
+        x.run(username, password)
+        //like my https://github.com/ringo360/bio-workers/blob/master/src/index.ts
+        //TODO: register successfull
+      }
+    }
+  } catch (e) {
+    console.log(e)
+  }
+})
 
 app.get('/test', async (c, next) => {
   //Context is not finalized
