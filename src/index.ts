@@ -75,6 +75,19 @@ app.get('/test', async (c, next) => {
   // await next()
 })
 
+app.get('/find/:user', async (c) => {
+  const target = c.req.param('user')
+  const x= db.prepare('select * from members')
+  for (const t of x.iterate()) {
+    if(t.name === target) {
+      c.json({
+        "name": t.name,
+        "age": t.age
+      })
+    }
+  }
+})
+
 const port = 3150
 console.log(`Listening port ${port}`)
 
