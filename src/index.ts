@@ -73,6 +73,7 @@ app.get('/test', async (c, next) => {
   const res = await db.prepare('select * from members')
   console.log('OK')
   return c.json({
+    "uwu": "string",
     "name": res.name,
     "age": res.age
   })
