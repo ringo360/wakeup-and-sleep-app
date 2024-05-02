@@ -58,6 +58,14 @@ app.get('/test', async (c, next) => {
   // await next()
 })
 
+app.get('/test2', async (c, next) => {
+  console.log('Called')
+  const res = await db.all("select * from members")
+  const x = JSON.stringify(res)
+  console.log(res)
+  console.log(x)
+})
+
 async function fetchdb() {
   const start = new Date()
   console.log('Called')
