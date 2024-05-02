@@ -54,9 +54,10 @@ app.get('/test', async (c, next) => {
   console.log('Awaiting')
   try {
     console.log('fetching')
-    const res = await fetchdb()
-    console.log(res)
-    return c.json(res)
+    await fetchdb((res) => {
+      console.log(res)
+      return c.json(res)
+    })
   } catch (e) {
     throw new Error(`Something went wrong: ${e}`)
   }
