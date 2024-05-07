@@ -95,7 +95,7 @@ app.post('/v1/user', async (c) => {
 app.get('/test', async (c, next) => {
   //Context is not finalized
   console.log('Awaiting')
-  const res = await db.prepare('select * from members').get()
+  const res:any = await db.prepare('select * from members').get()
   console.log(res)
   console.log('OK')
   return c.json({
@@ -109,7 +109,7 @@ app.get('/test', async (c, next) => {
 app.get('/find/:user', async (c) => {
   const target = c.req.param('user')
   console.log(`Finding ${target}`)
-  const x = await findusr(target)
+  const x:any = await findusr(target)
   if (x.name) {
     return c.json({
       "user": x.name,
@@ -122,9 +122,10 @@ app.get('/find/:user', async (c) => {
   }
 })
 
-async function findusr(target) {
+async function findusr(target:any) {
   const x = await db.prepare('select * from members')
-  for (const t of x.iterate()) {
+  let t:any;
+  for (t of x.iterate()) {
     if (t.name === target) {
       console.log(`I found ${t.name}`)
       return t
