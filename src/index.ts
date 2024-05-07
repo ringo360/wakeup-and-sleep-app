@@ -11,11 +11,19 @@ const db = new Database('./db/database.db')
 
 function init() {
   
-  db.exec("drop table if exists members");
-  db.exec("create table if not exists members(name,age)");
+  // db.exec("drop table if exists UserDB");
+  // db.exec("create table if not exists members(name,age)");
+  // db.exec("create table if not exists UserDB(usrID, devDate, devTime)");
+  // db.exec("create table UserDB(usrID, devDate, devTime)");
+  db.exec('drop table if exists personal');
+  db.exec('create table personal(id integer, name text)');
 
-  db.exec("drop table if exists members"); //need to delete this
-  db.exec("create table if not exists userdb(name,password)");
+  db.exec("insert into personal(id, name) values(1, 'Tarou');")
+  const t_res = db.prepare("select * from personal").get()
+  console.log(t_res)
+
+
+
   /*
   db.exec("insert into members(name,age) values(?,?)", "hoge", 33);
   db.exec("insert into members(name,age) values(?,?)", "foo", 44);
@@ -24,10 +32,12 @@ function init() {
       console.log(`${row.name} ${row.age}`);
   });
   */
-  const x = db.prepare('insert into members(name, age) values (?,?)')
+  // const x = db.prepare('insert into UserDB(devDate, devTime) values("2024-05-07", "10:30:00")')
+  // const x = db.prepare('insert into members(name, age) values (?,?)')
+  /*
   x.run('hoge', 33)
   x.run('foo', 44)
- 
+ */
   const res = db.prepare("select * from members").get()
   console.log(res)
   // console.log(JSON.stringify(res))
