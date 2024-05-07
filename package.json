@@ -5,6 +5,7 @@
   "dependencies": {
     "@hono/node-server": "^1.11.1",
     "better-sqlite3": "^9.6.0",
+    "fs": "^0.0.1-security",
     "hono": "^4.2.9"
   },
   "devDependencies": {

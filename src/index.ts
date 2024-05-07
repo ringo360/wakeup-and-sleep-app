@@ -2,9 +2,14 @@ import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
 import { logger } from 'hono/logger'
 import Database from 'better-sqlite3'
+import fs from 'fs'
 
 //SQLite3
 // const db = new sqlite3.Database('./db/database.db') old code
+const db_dir = './db'
+if (!fs.existsSync(db_dir)) {
+  fs.mkdirSync(db_dir)
+}
 const db = new Database('./db/database.db')
 
 //READ https://github.com/WiseLibs/better-sqlite3/
