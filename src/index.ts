@@ -20,11 +20,11 @@ function init() {
   // db.exec("create table if not exists members(name,age)");
   // db.exec("create table if not exists UserDB(usrID, devDate, devTime)");
   // db.exec("create table UserDB(usrID, devDate, devTime)");
-  db.exec('drop table if exists personal');
-  db.exec('create table personal(id integer, name text)');
+  db.exec('drop table if exists UserDB');
+  db.exec('create table UserDB(userid integer, date DATE)');
 
-  db.exec("insert into personal(id, name) values(1, 'Tarou');")
-  const t_res = db.prepare("select * from personal").get()
+  db.exec("insert into UserDB(userid, date) values(1, '2024-05-07');")
+  const t_res = db.prepare("select * from UserDB").get()
   console.log(t_res)
 
 
@@ -43,8 +43,6 @@ function init() {
   x.run('hoge', 33)
   x.run('foo', 44)
  */
-  const res = db.prepare("select * from members").get()
-  console.log(res)
   // console.log(JSON.stringify(res))
   /*
   db.get("select count(*) from members", (err, count) => {
@@ -57,14 +55,19 @@ function init() {
 console.log('Loading...')
 init()
 
-console.log('Again')
-const dev_x = db.prepare("select * from members").get()
+console.log('Pettern 1 (fetch all)')
+db.exec("insert into UserDB(userid, date) values(1, '2024-05-08');")
+db.exec("insert into UserDB(userid, date) values(2, '2023-12-12');")
+const dev_x = db.prepare("select * from UserDB").all()
 console.log(dev_x)
 // console.log(JSON.stringify(dev_x))
 
 
 
-console.log('Pattern 2 (nothing)')
+console.log('Pattern 2 (search userid=1)')
+const dev_x2 = db.prepare(`SELECT * FROM UserDB WHERE userid = 1`).all()
+console.log(dev_x2)
+
 
 //write
 
