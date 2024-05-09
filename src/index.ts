@@ -1,6 +1,7 @@
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
 import { logger } from 'hono/logger'
+import { formatInTimeZone } from 'date-fns-tz'
 import Database from 'better-sqlite3'
 import fs from 'fs'
 
@@ -14,6 +15,13 @@ const db = new Database('./db/database.db')
 
 //READ https://github.com/WiseLibs/better-sqlite3/
 
+function getJSTDate(date:Date) {
+  console.log(`Replace target date: ${date}`)
+
+  const JSTDate = formatInTimeZone(date, 'Asia/Tokyo', 'yyyy-MM-dd HH:mm:ss')
+  return JSTDate
+}
+
 function init() {
   
   // db.exec("drop table if exists UserDB");
@@ -22,11 +30,13 @@ function init() {
   // db.exec("create table UserDB(usrID, devDate, devTime)");
   db.exec('drop table if exists UserList');
   db.exec('drop table if exists UserData');
+  console.log(getJSTDate(new Date()))
   // db.exec('create table UserDB(userid INTEGER, displayname TEXT, date DATE)');
-  db.exec('create table UserList(usrname TEXT, password TEXT, creationdate DATE);');
-  db.exec('create table UserData(usrname TEXT, date DATE);')
+  db.exec('create table UserList(usrname TEXT, password TEXT, creationdate DATETIME);');
+  db.exec('create table UserData(usrname TEXT, sleepdate DATETIME, wakeupdate DATETIME);')
 
-  db.exec("insert into UserList(usrname, password, creationdate) values('tarou', '1234', '2024-05-07');")
+  db.exec("insert into UserList(usrname, password, creationdate) values('tarou', '1234', '2024-05-07 12:48:35');")
+  db.exec("insert into UserData(usrname, sleepdate, wakeupdate) values('tarou', '2024-05-08 23:14:19', '06:30:01');")
   const t_res:any = db.prepare("select * from UserList;").get()
   console.log(t_res)
 
@@ -57,6 +67,7 @@ function init() {
 
 console.log('Loading...')
 init()
+shutdown()
 
 console.log('=====UserList DB=====')
 
@@ -77,7 +88,7 @@ console.log('='.repeat(20))
 
 console.log('=====UserData DB=====')
 
-console.log('Write later')
+
 
 console.log('='.repeat(20))
 
@@ -180,7 +191,7 @@ process.on('SIGTERM', shutdown)
 
 async function shutdown() {
   console.log('Shutdown...')
-  db.close();
+  await db.close();
   console.log('[SQLite] Closed')
   console.log('Goodbye')
   process.exit(0)
