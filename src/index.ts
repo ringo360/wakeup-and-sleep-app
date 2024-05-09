@@ -16,14 +16,13 @@ const db = new Database('./db/database.db')
 //READ https://github.com/WiseLibs/better-sqlite3/
 
 function getJSTDate(date:Date) {
-  console.log(`Replace target date: ${date}`)
+  // console.log(`Replace target date: ${date}`) for devs
 
   const JSTDate = formatInTimeZone(date, 'Asia/Tokyo', 'yyyy-MM-dd HH:mm:ss')
   return JSTDate
 }
 
 function init() {
-  
   // db.exec("drop table if exists UserDB");
   // db.exec("create table if not exists members(name,age)");
   // db.exec("create table if not exists UserDB(usrID, devDate, devTime)");
@@ -76,7 +75,6 @@ db.exec("insert into UserList(usrname, password, creationdate) values('tarou', '
 db.exec("insert into UserList(usrname, password, creationdate) values('john', 't0day1shappydAy!', '2023-12-12');")
 const dev_x = db.prepare("select * from UserList").all()
 console.log(dev_x)
-// console.log(JSON.stringify(dev_x))
 
 
 
@@ -100,7 +98,7 @@ const app = new Hono()
 app.use(logger())
 
 app.get('/', (c) => {
-  return c.text('Hello Hono!')
+  return c.text('It works✨')
 })
 
 // read the: https://gist.github.com/bonniss/2fb3853640510b697ca38255ec6bd282
