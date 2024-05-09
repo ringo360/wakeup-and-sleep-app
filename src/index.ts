@@ -20,11 +20,14 @@ function init() {
   // db.exec("create table if not exists members(name,age)");
   // db.exec("create table if not exists UserDB(usrID, devDate, devTime)");
   // db.exec("create table UserDB(usrID, devDate, devTime)");
-  db.exec('drop table if exists UserDB');
-  db.exec('create table UserDB(userid integer, date DATE)');
+  db.exec('drop table if exists UserList');
+  db.exec('drop table if exists UserData');
+  // db.exec('create table UserDB(userid INTEGER, displayname TEXT, date DATE)');
+  db.exec('create table UserList(usrname TEXT, password TEXT, creationdate DATE);');
+  db.exec('create table UserData(usrname TEXT, date DATE);')
 
-  db.exec("insert into UserDB(userid, date) values(1, '2024-05-07');")
-  const t_res = db.prepare("select * from UserDB").get()
+  db.exec("insert into UserList(usrname, password, creationdate) values('tarou', '1234', '2024-05-07');")
+  const t_res:any = db.prepare("select * from UserList;").get()
   console.log(t_res)
 
 
@@ -55,19 +58,28 @@ function init() {
 console.log('Loading...')
 init()
 
+console.log('=====UserList DB=====')
+
 console.log('Pettern 1 (fetch all)')
-db.exec("insert into UserDB(userid, date) values(1, '2024-05-08');")
-db.exec("insert into UserDB(userid, date) values(2, '2023-12-12');")
-const dev_x = db.prepare("select * from UserDB").all()
+db.exec("insert into UserList(usrname, password, creationdate) values('tarou', 'longlonglonglonglonglongstring', '2024-05-08');")
+db.exec("insert into UserList(usrname, password, creationdate) values('john', 't0day1shappydAy!', '2023-12-12');")
+const dev_x = db.prepare("select * from UserList").all()
 console.log(dev_x)
 // console.log(JSON.stringify(dev_x))
 
 
 
-console.log('Pattern 2 (search userid=1)')
-const dev_x2 = db.prepare(`SELECT * FROM UserDB WHERE userid = 1`).all()
+console.log('Pattern 2 (search usrname="tarou")')
+const dev_x2 = db.prepare(`SELECT * FROM UserList WHERE usrname = 'tarou'`).all()
 console.log(dev_x2)
 
+console.log('='.repeat(20))
+
+console.log('=====UserData DB=====')
+
+console.log('Write later')
+
+console.log('='.repeat(20))
 
 //write
 
