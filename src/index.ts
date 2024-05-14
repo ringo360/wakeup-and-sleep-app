@@ -34,7 +34,7 @@ function init() {
   db.exec('create table UserList(usrname TEXT, password TEXT, creationdate DATETIME);');
   db.exec('create table UserData(usrname TEXT, sleepdate DATETIME, wakeupdate DATETIME);')
 
-  db.exec("insert into UserList(usrname, password, creationdate) values('tarou', '1234', '2024-05-07 12:48:35');")
+  db.exec(`insert into UserList(usrname, password, creationdate) values('tarou', '1234', '${getJSTDate(new Date())}');`)
   db.exec("insert into UserData(usrname, sleepdate, wakeupdate) values('tarou', '2024-05-08 23:14:19', '06:30:01');")
   const t_res:any = db.prepare("select * from UserList;").get()
   console.log(t_res)
@@ -66,7 +66,7 @@ function init() {
 
 console.log('Loading...')
 init()
-shutdown()
+// shutdown()
 
 console.log('=====UserList DB=====')
 
@@ -115,7 +115,7 @@ app.post('/v1/user', async (c) => {
       }, 400) //read http.cat
     } else {
       const check = await findusr(username)
-      if (check.name) {
+      if (check.usrname) {
         return c.json({
           "Error": "This username already exists!"
         }, 400)
@@ -137,7 +137,7 @@ app.post('/v1/user', async (c) => {
 app.get('/test', async (c, next) => {
   //Context is not finalized
   console.log('Awaiting')
-  const res:any = await db.prepare('select * from members').get()
+  const res:any = await db.prepare('select * from UserList').get()
   console.log(res)
   console.log('OK')
   return c.json({
@@ -151,11 +151,13 @@ app.get('/test', async (c, next) => {
 app.get('/find/:user', async (c) => {
   const target = c.req.param('user')
   console.log(`Finding ${target}`)
-  const x:any = await findusr(target)
-  if (x.name) {
+  const res:any = await findusr(target)
+  const x = res[0]
+  
+  if (x.usrname) {
     return c.json({
-      "user": x.name,
-      "age": x.age
+      "user": x.usrname,
+      "date": x.creationdate
     })
   } else {
     return c.json({
@@ -165,20 +167,27 @@ app.get('/find/:user', async (c) => {
 })
 
 async function findusr(target:any) {
-  const x = await db.prepare('select * from UserList')
-  let t:any;
-  for (t of x.iterate()) {
-    if (t.name === target) {
-      console.log(`I found ${t.name}`)
-      return t
-    }
+  const check:any = db.prepare(`SELECT EXISTS(SELECT * FROM UserList WHERE usrname = '${target}') AS count;`).get()
+  console.log(check.count) // number
+  if (check.count > 1) {
+    throw new Error(`oops, check.count is ${check.count}.`)
   }
+  if (check.count == 1) {
+    console.log('Found!')
+    const res:any = db.prepare(`SELECT * FROM UserList WHERE usrname = '${target}'`).all()
+    // console.log(res)
+    //res.usrname, res.password, res.creationdate...
+    //! * can replace with usrname, creationdate
+    return res;
+  }
+
   return 'not found'
 }
 
+
 const port = 3150
 console.log(`Listening port ${port}`)
-
+findusr('tarou')
 serve({
   fetch: app.fetch,
   port
