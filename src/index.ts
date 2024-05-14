@@ -15,14 +15,24 @@ const db = new Database('./db/database.db')
 
 //READ https://github.com/WiseLibs/better-sqlite3/
 
-async function getJSTDate(date:Date) {
+/**
+ * 日付をJST(日本標準時)にフォーマットします。
+ * @param date 日付(Date), デフォルト値: new Date()
+ * @returns 'yyyy-MM-dd HH:mm:ss'
+ */
+async function getJSTDate(date:Date = new Date()) {
   // console.log(`Replace target date: ${date}`) for devs
 
   const JSTDate = formatInTimeZone(date, 'Asia/Tokyo', 'yyyy-MM-dd HH:mm:ss')
   return JSTDate
 }
 
-async function existsusr(target:any) {
+/**
+ * UserListにユーザーが存在するかを確認します。findusrとは違い、存在するか否かの確認のみを行います。
+ * @param target ユーザー名(string)
+ * @returns true(存在する)、またはfalse(存在しない)
+ */
+async function existsusr(target:string) {
   const check:any = db.prepare(`SELECT EXISTS(SELECT * FROM UserList WHERE usrname = '${target}') AS count;`).get()
   console.log(`[ExistsUser] Result: ${check.count}`)
   if (check.count !== 0) {
@@ -32,7 +42,13 @@ async function existsusr(target:any) {
   }
 }
 
-async function findusr(target:any) {
+/**
+ * UserList内のユーザーを検索し、存在する場合はその情報を返します。
+ * @param target 検索したいユーザー名(string)
+ * @returns 存在しない場合は'not found'を返します。(string) 存在する場合はresを返します。
+ * resにはusrname(ユーザー名)とcreationdate(作成日)が含まれています。
+ */
+async function findusr(target:string) {
   const check:any = db.prepare(`SELECT EXISTS(SELECT * FROM UserList WHERE usrname = '${target}') AS count;`).get()
   console.log(check.count) // number
   if (check.count > 1) {
