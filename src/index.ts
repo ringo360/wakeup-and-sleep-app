@@ -15,28 +15,73 @@ const db = new Database('./db/database.db')
 
 //READ https://github.com/WiseLibs/better-sqlite3/
 
-function getJSTDate(date:Date) {
+async function getJSTDate(date:Date) {
   // console.log(`Replace target date: ${date}`) for devs
 
   const JSTDate = formatInTimeZone(date, 'Asia/Tokyo', 'yyyy-MM-dd HH:mm:ss')
   return JSTDate
 }
 
-function init() {
+async function existsusr(target:any) {
+  const check:any = db.prepare(`SELECT EXISTS(SELECT * FROM UserList WHERE usrname = '${target}') AS count;`).get()
+  console.log(`[ExistsUser] Result: ${check.count}`)
+  if (check.count !== 0) {
+    return true
+  } else {
+    return false
+  }
+}
+
+async function findusr(target:any) {
+  const check:any = db.prepare(`SELECT EXISTS(SELECT * FROM UserList WHERE usrname = '${target}') AS count;`).get()
+  console.log(check.count) // number
+  if (check.count > 1) {
+    throw new Error(`oops, check.count is ${check.count}.`)
+  }
+  if (check.count == 1) {
+    console.log('Found!')
+    const res:any = db.prepare(`SELECT * FROM UserList WHERE usrname = '${target}'`).all()
+    // console.log(res)
+    //res.usrname, res.password, res.creationdate...
+    //! * can replace with usrname, creationdate
+    return res;
+  }
+
+  return 'not found'
+}
+
+/**
+ * UserListにユーザーを登録します。
+ * @param username ユーザー名(string)
+ * @param password パスワード(string)
+ * @returns 既に存在するユーザーは'already exists', 成功時には'ok'を返却する。(どちらもstring)
+ */
+async function addusr(username: string, password: string) {
+  if (await existsusr(username)) {
+    console.log(`[AddUser] ${username} already exists.`)
+    return 'already exists'
+  } else {
+    //something
+    await db.exec(`insert into UserList(usrname, password, creationdate) values('${username}', '${password}', '${await getJSTDate(new Date())}');`)
+    console.log(`[AddUser] Added ${username}!`)
+    return 'ok'
+  }
+  
+}
+
+async function init() {
   // db.exec("drop table if exists UserDB");
   // db.exec("create table if not exists members(name,age)");
   // db.exec("create table if not exists UserDB(usrID, devDate, devTime)");
   // db.exec("create table UserDB(usrID, devDate, devTime)");
-  db.exec('drop table if exists UserList');
-  db.exec('drop table if exists UserData');
-  console.log(getJSTDate(new Date()))
+  await db.exec('drop table if exists UserList');
+  await db.exec('drop table if exists UserData');
   // db.exec('create table UserDB(userid INTEGER, displayname TEXT, date DATE)');
-  db.exec('create table UserList(usrname TEXT, password TEXT, creationdate DATETIME);');
-  db.exec('create table UserData(usrname TEXT, sleepdate DATETIME, wakeupdate DATETIME);')
+  await db.exec('create table UserList(usrname TEXT, password TEXT, creationdate DATETIME);');
+  await db.exec('create table UserData(usrname TEXT, sleepdate DATETIME, wakeupdate DATETIME);')
 
-  db.exec(`insert into UserList(usrname, password, creationdate) values('tarou', '1234', '${getJSTDate(new Date())}');`)
-  db.exec("insert into UserData(usrname, sleepdate, wakeupdate) values('tarou', '2024-05-08 23:14:19', '06:30:01');")
-  const t_res:any = db.prepare("select * from UserList;").get()
+  await addusr('tarou', '1234')
+  const t_res:any = await db.prepare("select * from UserList;").get()
   console.log(t_res)
 
 
@@ -165,24 +210,6 @@ app.get('/find/:user', async (c) => {
     }, 404)
   }
 })
-
-async function findusr(target:any) {
-  const check:any = db.prepare(`SELECT EXISTS(SELECT * FROM UserList WHERE usrname = '${target}') AS count;`).get()
-  console.log(check.count) // number
-  if (check.count > 1) {
-    throw new Error(`oops, check.count is ${check.count}.`)
-  }
-  if (check.count == 1) {
-    console.log('Found!')
-    const res:any = db.prepare(`SELECT * FROM UserList WHERE usrname = '${target}'`).all()
-    // console.log(res)
-    //res.usrname, res.password, res.creationdate...
-    //! * can replace with usrname, creationdate
-    return res;
-  }
-
-  return 'not found'
-}
 
 
 const port = 3150
