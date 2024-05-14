@@ -120,10 +120,13 @@ app.post('/v1/user', async (c) => {
           "Error": "This username already exists!"
         }, 400)
       } else {
-        const x = db.prepare('insert into userdb(name,password) values (?,?)')
-        x.run(username, password)
+        const nowJST = getJSTDate(new Date())
+        await db.exec(`insert into UserList(name,password) values (${username}, ${password}, ${nowJST})`)
         //like my https://github.com/ringo360/bio-workers/blob/master/src/index.ts
         //TODO: register successfull
+        return c.json({
+          "OK": "Registered!"
+        })
       }
     }
   } catch (e) {
@@ -162,7 +165,7 @@ app.get('/find/:user', async (c) => {
 })
 
 async function findusr(target:any) {
-  const x = await db.prepare('select * from members')
+  const x = await db.prepare('select * from UserList')
   let t:any;
   for (t of x.iterate()) {
     if (t.name === target) {
