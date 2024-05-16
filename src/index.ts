@@ -85,6 +85,26 @@ function addusr(username: string, password: string) {
   
 }
 
+/**
+ * 就寝時に使われます。
+ * @param username ユーザー名(string)
+ */
+function log_sleep(username: string) {
+  //TODO: 努力
+  db.exec(`insert into UserList(usrname, sleepdate, isactive) values('${username}', '${getJSTDate()}', 'true');`)
+}
+
+/**
+ * 起床時に使われます。
+ * @param username ユーザー名(string)
+ */
+function log_wakeup(username: string) {
+  //TODO: やりましょう
+}
+
+/**
+ * (開発者向け)データベースの初期化などを行います。
+ */
 function init() {
   // db.exec("drop table if exists UserDB");
   // db.exec("create table if not exists members(name,age)");
@@ -94,7 +114,7 @@ function init() {
   db.exec('drop table if exists UserData');
   // db.exec('create table UserDB(userid INTEGER, displayname TEXT, date DATE)');
   db.exec('create table UserList(usrname TEXT, password TEXT, creationdate DATETIME);');
-  db.exec('create table UserData(usrname TEXT, sleepdate DATETIME, wakeupdate DATETIME);')
+  db.exec('create table UserData(usrname TEXT, sleepdate DATETIME, wakeupdate DATETIME, isactive BOOLEAN);')
 
   console.log('Adding usr...')
   addusr('tarou', '1234')
@@ -200,6 +220,9 @@ serve({
 process.on('SIGINT', shutdown)
 process.on('SIGTERM', shutdown)
 
+/**
+ * 終了処理を行います。(Graceful Shutdownを実現させます。)
+ */
 async function shutdown() {
   console.log('Shutdown...')
   await db.close();
