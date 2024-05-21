@@ -1,3 +1,11 @@
+// (for me) editor.parameterHints.enabledをオフにすること。
+
+/**
+ * Pythonなどに存在するsleep()的なものを可能にします。
+ * @param ms ミリ秒(ex: 1000 = 1秒)
+ */
+const delay = (ms: any) => new Promise((resolve) => setTimeout(resolve, ms));
+
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
 import { logger } from 'hono/logger'
@@ -6,7 +14,6 @@ import Database from 'better-sqlite3'
 import fs from 'fs'
 
 //SQLite3
-// const db = new sqlite3.Database('./db/database.db') old code
 const db_dir = './db'
 if (!fs.existsSync(db_dir)) {
   fs.mkdirSync(db_dir)
@@ -86,20 +93,60 @@ function addusr(username: string, password: string) {
 }
 
 /**
+ * 対象のユーザーがSleepDataのテーブル内に、いくつのカラムを持っているか取得します。
+ * @param target ユーザー名(string)
+ * @returns 数値(何らかの問題が発生した場合は-1を返します。)
+ * ユーザーがまだ記録したことがない場合に加え、ユーザーが存在しない場合も0を返します。
+ * ユーザーの存在を確認する場合はfindusr()を使用してください。
+ */
+function getnum(target: string) {
+  console.log('[getnum] fetching num')
+  //const delay = (ms: any) => new Promise((resolve) => setTimeout(resolve, ms));
+  const check:any = db.prepare(`SELECT COUNT(usrname='${target}' OR NULL) AS count from SleepData`).get()
+  console.log(`[getnum] ${target} - ${check.count}`)
+  const x = check.count as number
+  if (x < 0) {
+    console.log(`${x} - something went wrong`)
+    return -1
+  }
+  return x
+}
+
+/**
  * 就寝時に使われます。
  * @param username ユーザー名(string)
+ * @returns boolean
  */
 function log_sleep(username: string) {
   //TODO: 努力
-  db.exec(`insert into UserList(usrname, sleepdate, isactive) values('${username}', '${getJSTDate()}', 'true');`)
+  try {
+    db.exec(`insert into SleepData(num, usrname, sleepdate) values('${getnum(username) + 1}', '${username}', '${getJSTDate()}');`)
+    return true
+  } catch (e) {
+    console.log(e)
+    return false;
+  }
 }
 
 /**
  * 起床時に使われます。
  * @param username ユーザー名(string)
+ * @returns boolean
  */
 function log_wakeup(username: string) {
+  //https://qiita.com/minhee/items/8de52f4bffb886c68b99 みなさい
   //TODO: やりましょう
+  //ex UPDATE 家計簿 SET 出金額　= 1500 WHERE 日付 = '2021-08-03'
+  console.log('[wakeup] called')
+  const num = getnum(username)
+  console.log(`[wakeup] update ${username} - ${num}`)
+  if (num < 0) {
+    console.log(`Err: num is ${num}`)
+    return false;
+  }
+  db.exec(`update SleepData SET wakeupdate = '${getJSTDate()}' where num = '${num}' and usrname = '${username}'`)
+  console.log('[wakeup] ok!')
+  return true;
 }
 
 /**
@@ -112,9 +159,11 @@ function init() {
   // db.exec("create table UserDB(usrID, devDate, devTime)");
   db.exec('drop table if exists UserList');
   db.exec('drop table if exists UserData');
+  db.exec('drop table if exists SleepData');
   // db.exec('create table UserDB(userid INTEGER, displayname TEXT, date DATE)');
   db.exec('create table UserList(usrname TEXT, password TEXT, creationdate DATETIME);');
-  db.exec('create table UserData(usrname TEXT, sleepdate DATETIME, wakeupdate DATETIME, isactive BOOLEAN);')
+  db.exec('create table UserData(usrname TEXT, isSleeping BOOLEAN);');
+  db.exec('create table SleepData(num INTEGER, usrname TEXT, sleepdate DATETIME, wakeupdate DATETIME);')
 
   console.log('Adding usr...')
   addusr('tarou', '1234')
@@ -132,10 +181,24 @@ console.log('Loading...');
 init()
 // shutdown()
 
+/*
 console.log('=====UserList DB=====')
 
 console.log('Pettern 1 (fetch all)')
+
 addusr('john', 't0day1shappydAy!')
+log_sleep('tarou')
+log_sleep('john')
+delay(1000)
+log_wakeup('john')
+delay(500)
+log_sleep('john')
+delay(10)
+log_wakeup('tarou')
+delay(1000)
+log_wakeup('john')
+log_sleep('john')
+log_wakeup('john')
 const dev_x = db.prepare("select * from UserList").all()
 console.log(dev_x)
 
@@ -146,7 +209,7 @@ console.log('=====UserData DB=====')
 
 
 console.log('='.repeat(20))
-
+*/
 //write
 
 //Hono
