@@ -7,12 +7,6 @@ const dev_x = db.prepare("select * from UserList").all()
 console.log(dev_x)
 */
 
-/**
- * Pythonなどに存在するsleep()的なものを可能にします。(async only)
- * @param ms ミリ秒(ex: 1000 = 1秒)
- */
-const delay = (ms: any) => new Promise((resolve) => setTimeout(resolve, ms));
-
 import { db, initdb } from "./db";
 import { addusr } from "./util"; //dev
 
@@ -23,7 +17,6 @@ import { addusr } from "./util"; //dev
  * データベースの初期化などを行います。
  */
 async function init() {
-
   console.log('Prepareing Database...')
   await initdb();
   console.log('OK')

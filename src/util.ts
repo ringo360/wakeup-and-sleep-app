@@ -2,6 +2,12 @@ import { db } from './db'
 import { formatInTimeZone } from "date-fns-tz"
 
 /**
+ * Pythonなどに存在するsleep()的なものを可能にします。(async only)
+ * @param ms ミリ秒(ex: 1000 = 1秒)
+ */
+export const delay = (ms: any) => new Promise((resolve) => setTimeout(resolve, ms));
+
+/**
  * 日付をJST(日本標準時)にフォーマットします。
  * @param date 日付(Date), デフォルト値: new Date()
  * @returns 'yyyy-MM-dd HH:mm:ss'
