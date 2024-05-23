@@ -11,7 +11,9 @@ app.get('/', (c) => {
   return c.text('It works✨')
 })
 
-
+app.get('/login', async (c) => {
+    //login
+})
 
 app.post('/v1/user', async (c) => {
   try {

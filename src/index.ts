@@ -9,6 +9,7 @@ console.log(dev_x)
 
 import { db, initdb } from "./db";
 import { addusr } from "./util"; //dev
+import './websv'
 
 
 
