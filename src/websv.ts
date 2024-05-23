@@ -1,11 +1,17 @@
 import { Hono } from "hono"
 import { serve } from "@hono/node-server"
+import { cors } from "hono/cors"
 import { logger } from "hono/logger"
 import { addusr, findusr } from "./util"
 
 const app = new Hono()
 
 app.use(logger())
+
+app.use('/v1/*', cors({
+  origin: '*',
+  allowMethods: ['GET', 'POST', 'DELETE']
+}))
 
 app.get('/', (c) => {
   return c.text('It works✨')
