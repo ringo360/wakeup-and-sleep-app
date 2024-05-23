@@ -17,8 +17,8 @@ app.get('/', (c) => {
   return c.text('It works✨')
 })
 
-app.get('/login', async (c) => {
-    //login
+app.post('/v1/login', async (c) => {
+  
 })
 
 app.post('/v1/user', async (c) => {
@@ -62,6 +62,10 @@ app.get('/find/:user', async (c) => {
       "error": `cannot find ${target}`
     }, 404)
   }
+})
+
+app.notFound((c) => {
+  return c.text('404 - Are you lost?', 404)
 })
 
 
