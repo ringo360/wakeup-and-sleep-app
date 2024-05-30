@@ -5,6 +5,7 @@ import { logger } from "hono/logger"
 import { addusr, findusr, genRefToken, genAccToken } from "./util"
 import { port } from "./config"
 
+//p-dev.ringoxd.dev
 const app = new Hono()
 
 
@@ -37,6 +38,9 @@ app.post('/v1/user', async (c) => {
         const res_gr = await genRefToken(username as string, password as string)
         const isok_r = res_gr[0] as Boolean
         const msg_r = res_gr[1] as string
+        console.log(res_gr)
+        console.log(isok_r)
+        console.log(msg_r)
         if (isok_r !== true) {
           return c.json({
             "Error": msg_r

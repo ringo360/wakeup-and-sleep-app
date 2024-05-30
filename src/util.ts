@@ -26,6 +26,7 @@ export function genRefToken(user:string, pass:string) {
       password: pass,
     }
     const token = sign(payload, JWTSecret)
+    console.log(`[genRefToken] ${token}`)
     return [true, token]
 
   } catch (e) {
