@@ -26,6 +26,7 @@ app.post('/v1/login', async (c) => {
 })
 
 app.get('/v1/user/acctoken', async (c) => {
+  console.log('Fire')
   const body = await c.req.parseBody()
   const { RefreshToken } = body
   if (!RefreshToken) return c.json({"Error": "Body is invalid"})
