@@ -3,7 +3,8 @@ import { serve } from "@hono/node-server"
 import { cors } from "hono/cors"
 import { logger } from "hono/logger"
 import { addusr, findusr, genRefToken, genAccToken } from "./util"
-import { port } from "./config"
+import { JWTSecret, port } from "./config"
+import { verify } from "hono/jwt"
 
 //p-dev.ringoxd.dev
 const app = new Hono()
@@ -22,6 +23,29 @@ app.get('/', (c) => {
 
 app.post('/v1/login', async (c) => {
   return c.text('uwu')
+})
+
+app.get('/v1/user/acctoken', async (c) => {
+  const body = await c.req.parseBody()
+  const { RefreshToken } = body
+  try {
+    await verify(RefreshToken as string, JWTSecret)
+  } catch (e) {
+    return c.json({
+      "Error": "Invalid Token"
+    })
+  }
+  const res = await genAccToken(RefreshToken as string)
+  const isok = res[0]
+  if (isok !== true) {
+    return c.json({
+      "Error": res[1]
+    }, 500)
+  }
+  return c.json({
+    "OK": "Generated AccessToken!",
+    "AccessToken": res[1]
+  })
 })
 
 app.post('/v1/user', async (c) => {
