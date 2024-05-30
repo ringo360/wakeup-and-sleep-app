@@ -25,10 +25,9 @@ app.post('/v1/login', async (c) => {
   return c.text('uwu')
 })
 
-app.post('/v1/user/acctoken', async (c) => {
+app.get('/v1/user/acctoken', async (c) => {
   console.log('Fire')
-  const body = await c.req.parseBody()
-  const { token } = body
+  const token = c.req.header('X-Token')
   if (!token) return c.json({"Error": "Body is invalid"})
   console.log(token)
   try {
