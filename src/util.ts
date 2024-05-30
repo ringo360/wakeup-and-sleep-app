@@ -46,10 +46,12 @@ export async function genRefToken(user:string, pass:string) {
  */
 export async function genAccToken(refToken:string) {
   try {
+    console.log('Generating')
     const payload = {
       token: refToken,
       exp: Math.floor(getJSTNow().getTime() / 1000) + 60 * 1 //1min token
     }
+    console.log('Signing...')
     const token = await sign(payload, JWTSecret)
     return [true, token]
   } catch (e) {

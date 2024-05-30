@@ -36,6 +36,7 @@ app.get('/v1/user/acctoken', async (c) => {
     })
   }
   const res = await genAccToken(RefreshToken as string)
+  console.log(res)
   const isok = res[0]
   if (isok !== true) {
     return c.json({
