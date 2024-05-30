@@ -28,6 +28,7 @@ app.post('/v1/login', async (c) => {
 app.get('/v1/user/acctoken', async (c) => {
   const body = await c.req.parseBody()
   const { RefreshToken } = body
+  if (!RefreshToken) return c.json({"Error": "Body is invalid"})
   console.log(RefreshToken)
   try {
     await verify(RefreshToken as string, JWTSecret)
