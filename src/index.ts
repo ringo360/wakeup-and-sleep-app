@@ -7,6 +7,7 @@ const dev_x = db.prepare("select * from UserList").all()
 console.log(dev_x)
 */
 
+import { ConfigChecker } from "./config";
 import { db, initdb } from "./db";
 import { addusr } from "./util"; //dev
 import './websv'
@@ -18,6 +19,8 @@ import './websv'
  * データベースの初期化などを行います。
  */
 async function init() {
+  console.log('Checking Config...')
+  await ConfigChecker()
   console.log('Prepareing Database...')
   await initdb();
   console.log('OK')

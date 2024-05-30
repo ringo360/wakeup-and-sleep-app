@@ -1,11 +1,57 @@
 import { db } from './db'
 import { formatInTimeZone } from "date-fns-tz"
+import { decode, sign, verify } from "hono/jwt"
+import { JWTSecret } from './config';
+import { secureHeaders } from 'hono/secure-headers';
 
 /**
  * Pythonなどに存在するsleep()的なものを可能にします。(async only)
  * @param ms ミリ秒(ex: 1000 = 1秒)
  */
 export const delay = (ms: any) => new Promise((resolve) => setTimeout(resolve, ms));
+
+/* =================================== */
+
+/**
+ * hono/jwtによるリフレッシュトークンを生成します。
+ * このtokenには期限がないため、丁寧に扱う必要があります!
+ * @param user ユーザー名
+ * @param pass パスワード
+ * @returns Boolean, エラーまたはtoken
+ */
+export function genRefToken(user:string, pass:string) {
+  try {
+    const payload = {
+      user: user,
+      password: pass,
+    }
+    const token = sign(payload, JWTSecret)
+    return [true, token]
+
+  } catch (e) {
+    console.error(e)
+    return [false, e]
+  }
+}
+
+/**
+ * リフレッシュトークンを利用してアクセストークンを取得します。期限は10分です。
+ * @param refToken リフレッシュトークン(genRefToken()で取得したもの)
+ * @returns Boolean, エラーまたはtoken
+ */
+export function genAccToken(refToken:string) {
+  try {
+    const payload = {
+      token: refToken,
+      exp: Math.floor(getJSTNow().getTime() / 1000) + 60 * 1 //1min token
+    }
+    const token = sign(payload, JWTSecret)
+    return [true, token]
+  } catch (e) {
+    return [false, e]
+  }
+}
+
 
 /**
  * 日付をJST(日本標準時)にフォーマットします。
@@ -17,6 +63,17 @@ export function getJSTDate(date:Date = new Date()) {
   
     const JSTDate = formatInTimeZone(date, 'Asia/Tokyo', 'yyyy-MM-dd HH:mm:ss')
     return JSTDate
+}
+
+/**
+ * Date型で日本時間が欲しい場合に使います。
+ * これにより、どの実行環境でも日本時間を取得することが可能となります。
+ * 
+ * getJSTNow().getTime()といった使い方も可能です。
+ * @returns Date(日本時間に直された版)
+ */
+export function getJSTNow() {
+  return new Date(Date.now() + ((new Date().getTimezoneOffset() + (9 * 60)) * 60 * 1000));
 }
 
 /**

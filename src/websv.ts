@@ -2,9 +2,11 @@ import { Hono } from "hono"
 import { serve } from "@hono/node-server"
 import { cors } from "hono/cors"
 import { logger } from "hono/logger"
-import { addusr, findusr } from "./util"
+import { addusr, findusr, genRefToken, genAccToken } from "./util"
+import { port } from "./config"
 
 const app = new Hono()
+
 
 app.use(logger())
 
@@ -18,7 +20,7 @@ app.get('/', (c) => {
 })
 
 app.post('/v1/login', async (c) => {
-  
+  return c.text('uwu')
 })
 
 app.post('/v1/user', async (c) => {
@@ -32,8 +34,17 @@ app.post('/v1/user', async (c) => {
     } else {
       const res = addusr(username as string, password as string)
       if (res === 'ok') {
+        const res_gr = await genRefToken(username as string, password as string)
+        const isok_r = res_gr[0] as Boolean
+        const msg_r = res_gr[1] as string
+        if (isok_r !== true) {
+          return c.json({
+            "Error": msg_r
+          }, 500)
+        }
         return c.json({
-          "OK": "Registered!"
+          "OK": "Registered!",
+          "RefreshToken": msg_r
         })
       } else if (res === 'already exists') {
         return c.json({
@@ -64,12 +75,12 @@ app.get('/find/:user', async (c) => {
   }
 })
 
+
 app.notFound((c) => {
   return c.text('404 - Are you lost?', 404)
 })
 
 
-const port = 3150
 console.log(`Listening port ${port}`)
 serve({
   fetch: app.fetch,
