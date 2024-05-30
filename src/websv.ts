@@ -28,6 +28,7 @@ app.post('/v1/login', async (c) => {
 app.get('/v1/user/acctoken', async (c) => {
   const body = await c.req.parseBody()
   const { RefreshToken } = body
+  console.log(RefreshToken)
   try {
     await verify(RefreshToken as string, JWTSecret)
   } catch (e) {
@@ -35,6 +36,7 @@ app.get('/v1/user/acctoken', async (c) => {
       "Error": "Invalid Token"
     })
   }
+  console.log('Generating')
   const res = await genAccToken(RefreshToken as string)
   console.log(res)
   const isok = res[0]
