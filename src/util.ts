@@ -122,6 +122,18 @@ export function findusr(target:string) {
   return 'not found'
 }
 
+/**
+ * パスワードを確認します。
+ * @param user 
+ * @param pass 
+ * @returns Boolean
+ */
+export function CheckPass(user:string, pass:string) {
+  const res:any = db.prepare(`SELECT password FROM UserList WHERE usrname = '${user}'`).all()
+  if (res.password === pass) return true;
+  else return false;
+}
+
 export function CheckUsr(username: string, password: string) {
   console.log(`Checking ${username}... password: ${password}`)
   

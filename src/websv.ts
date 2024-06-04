@@ -2,7 +2,7 @@ import { Hono } from "hono"
 import { serve } from "@hono/node-server"
 import { cors } from "hono/cors"
 import { logger } from "hono/logger"
-import { addusr, findusr, genRefToken, genAccToken } from "./util"
+import { addusr, findusr, genRefToken, genAccToken, CheckPass } from "./util"
 import { JWTSecret, port } from "./config"
 import { verify } from "hono/jwt"
 
@@ -22,7 +22,11 @@ app.get('/', (c) => {
 })
 
 app.post('/v1/login', async (c) => {
-  return c.text('uwu')
+  const body = await c.req.parseBody()
+  const { username, password } = body
+  if (CheckPass(username as string, password as string) === true) {
+    
+  }
 })
 
 app.get('/v1/user/acctoken', async (c) => {

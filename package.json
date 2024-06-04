@@ -13,5 +13,8 @@
     "@types/better-sqlite3": "^7.6.10",
     "@types/node": "^20.11.17",
     "tsx": "^4.7.1"
+  },
+  "engines": {
+    "node": "21.2.0"
   }
 }
