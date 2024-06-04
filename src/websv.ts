@@ -5,10 +5,12 @@ import { logger } from "hono/logger"
 import { addusr, findusr, genRefToken, genAccToken, CheckPass } from "./util"
 import { JWTSecret, port } from "./config"
 import { verify } from "hono/jwt"
+import session_routes from "./session"
 
 //p-dev.ringoxd.dev
 const app = new Hono()
 
+app.route('/', session_routes)
 
 app.use(logger())
 
@@ -19,14 +21,6 @@ app.use('/v1/*', cors({
 
 app.get('/', (c) => {
   return c.text('It works✨')
-})
-
-app.post('/v1/login', async (c) => {
-  const body = await c.req.parseBody()
-  const { username, password } = body
-  if (CheckPass(username as string, password as string) === true) {
-    
-  }
 })
 
 app.get('/v1/user/acctoken', async (c) => {
