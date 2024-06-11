@@ -2,6 +2,7 @@ import { Hono } from "hono"
 import { CookieStore, Session, sessionMiddleware } from "hono-sessions"
 import { CheckPass } from "./util"
 import { logger } from "hono/logger"
+import { cors } from "hono/cors"
 
 const store = new CookieStore()
 const session_routes = new Hono<{
@@ -12,6 +13,11 @@ const session_routes = new Hono<{
 }>().basePath('/auth')
 
 session_routes.use(logger())
+
+session_routes.use('*', cors({
+  origin: '*',
+  allowMethods: ['GET', 'POST', 'DELETE']
+}))
 
 session_routes.use('*', sessionMiddleware({
   store,
