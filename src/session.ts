@@ -1,6 +1,7 @@
 import { Hono } from "hono"
 import { CookieStore, Session, sessionMiddleware } from "hono-sessions"
 import { CheckPass } from "./util"
+import { logger } from "hono/logger"
 
 const store = new CookieStore()
 const session_routes = new Hono<{
@@ -8,8 +9,10 @@ const session_routes = new Hono<{
       session: Session,
       session_key_rotation: boolean
     }
-  }>().basePath('/auth')
-  
+}>().basePath('/auth')
+
+session_routes.use(logger())
+
 session_routes.use('*', sessionMiddleware({
   store,
   expireAfterSeconds: 30, //30sec for dev
