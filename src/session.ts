@@ -18,7 +18,7 @@ session_routes.use('*', sessionMiddleware({
     path: '/',
     httpOnly: true,
   },
-  encryptionKey: 'uwu'
+  encryptionKey: '8tWz65V7YAUdSG6uEnNB9DkxZNmkG8QQ' //32文字以上
 }))
 
 session_routes.post('/login', async (c) => {
