@@ -35,6 +35,9 @@ session_routes.post('/login', async (c) => {
     const body = await c.req.parseBody()
     console.log(body)
     const { username, password } = body
+    if (!username || !password) return c.json({
+      'Result': 'Invalid Request'
+    }, 400)
     if (CheckPass(username as string, password as string) === true) {
         c.set('session_key_rotation', true)
         session.set('username', username)
