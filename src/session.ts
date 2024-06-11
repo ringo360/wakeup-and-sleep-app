@@ -33,6 +33,7 @@ session_routes.use('*', sessionMiddleware({
 session_routes.post('/login', async (c) => {
     const session = c.get('session')
     const body = await c.req.parseBody()
+    console.log(body)
     const { username, password } = body
     if (CheckPass(username as string, password as string) === true) {
         c.set('session_key_rotation', true)
