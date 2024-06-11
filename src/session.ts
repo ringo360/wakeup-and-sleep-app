@@ -39,7 +39,7 @@ session_routes.post('/login', async (c) => {
         session.flash('result', 'failed')
         return c.json({
             'Result': 'Failed'
-        })
+        }, 400)
     }
 })
 
