@@ -130,8 +130,9 @@ export function findusr(target:string) {
  */
 export function CheckPass(user:string, pass:string) {
   const res:any = db.prepare(`SELECT password FROM UserList WHERE usrname = '${user}'`).all()
-  console.log(res)
-  if (res.password === pass) return true;
+  console.log(res[0])
+  const parsed_res = res[0]
+  if (parsed_res.password === pass) return true;
   else return false;
 }
 
