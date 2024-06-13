@@ -36,10 +36,14 @@ session_routes.post('/login', async (c) => {
     console.log(c.req.header('Content-Type'))
     console.log(body)
     const { username, password } = body
-    if (!username || !password) return c.json({
-      'Result': 'Invalid Request'
-    }, 400)
+    if (!username || !password) {
+      console.log('Invalid Req')
+      return c.json({
+       'Result': 'Invalid Request'
+      }, 400)
+    }
     if (CheckPass(username as string, password as string) === true) {
+      console.log('ok!')
         c.set('session_key_rotation', true)
         session.set('username', username)
         session.set('failed-login-attempts', null)
@@ -48,6 +52,7 @@ session_routes.post('/login', async (c) => {
             'Result': 'OK'
         })
     } else {
+        console.log('Failed')
         const C_Fail = (session.get('failed-login-attempts') || 0 ) as number
         session.set('failed-login-attempts', C_Fail + 1)
         session.flash('result', 'failed')
