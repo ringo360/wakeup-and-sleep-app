@@ -33,7 +33,6 @@ session_routes.use('*', sessionMiddleware({
 session_routes.post('/login', async (c) => {
     const session = c.get('session')
     const body = await c.req.parseBody()
-    console.log(c.req) //dev
     console.log(c.req.header('Content-Type'))
     console.log(body)
     const { username, password } = body
