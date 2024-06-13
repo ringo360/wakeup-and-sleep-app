@@ -65,8 +65,13 @@ session_routes.post('/login', async (c) => {
 session_routes.get('/info', async (c) => {
   const session = c.get('session')
   const user = session.get('username')
-  if (!user) return c.text('You need to login!', 400)
-  else c.text(`Hello, ${user}!`, 200)
+  if (!user) return c.json({
+    'msg': 'You need to login'
+  }, 400)
+  else c.json({
+    'msg': `Hello, ${user}!`,
+    'user': user
+  }, 200)
 })
 
 session_routes.post('/logout', async (c) => {
