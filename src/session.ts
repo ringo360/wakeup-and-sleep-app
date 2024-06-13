@@ -21,7 +21,7 @@ session_routes.use('*', cors({
 
 session_routes.use('*', sessionMiddleware({
   store,
-  expireAfterSeconds: 30, //30sec for dev
+  expireAfterSeconds: 120, //120sec for dev
   cookieOptions: {
     sameSite: 'Lax',
     path: '/',
