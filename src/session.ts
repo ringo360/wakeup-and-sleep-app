@@ -62,6 +62,13 @@ session_routes.post('/login', async (c) => {
     }
 })
 
+session_routes.get('/info', async (c) => {
+  const session = c.get('session')
+  const user = session.get('username')
+  if (!user) return c.text('You need to login!')
+  else c.text(`Hello, ${user}!`)
+})
+
 session_routes.post('/logout', async (c) => {
     c.get('session').deleteSession()
     return c.json({
