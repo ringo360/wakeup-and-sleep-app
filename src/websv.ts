@@ -6,11 +6,13 @@ import { addusr, findusr, genRefToken, genAccToken, CheckPass } from "./util"
 import { JWTSecret, port } from "./config"
 import { verify } from "hono/jwt"
 import session_routes from "./session"
+import server from "./app"
 
 //p-dev.ringoxd.dev
 const app = new Hono()
 
 app.route('/', session_routes)
+app.route('/', server)
 
 app.use(logger())
 
@@ -18,10 +20,6 @@ app.use('/v1/*', cors({
   origin: '*',
   allowMethods: ['GET', 'POST', 'DELETE']
 }))
-
-app.get('/', (c) => {
-  return c.text('It works✨')
-})
 
 app.get('/v1/user/acctoken', async (c) => {
   console.log('Fire')

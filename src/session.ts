@@ -3,6 +3,7 @@ import { CookieStore, Session, sessionMiddleware } from "hono-sessions"
 import { CheckPass } from "./util"
 import { logger } from "hono/logger"
 import { cors } from "hono/cors"
+import {html} from 'hono/html'
 
 const store = new CookieStore()
 const session_routes = new Hono<{
@@ -66,7 +67,8 @@ session_routes.get('/info', async (c) => {
   const session = c.get('session')
   const user = session.get('username')
   if (!user) return c.json({
-    'msg': 'You need to login'
+    'msg': 'You need to login',
+    'user': user
   }, 400)
   else c.json({
     'msg': `Hello, ${user}!`,
@@ -80,5 +82,41 @@ session_routes.post('/logout', async (c) => {
         'Result': 'OK'
     })
 })
+
+session_routes.get('/dev', (c) => {
+  const session = c.get('session')
+
+  const username = session.get('username') || ''
+
+  return c.html(html`<!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Hono Sessions</title>
+    </head>
+    <body>
+        ${ username && html`<p id="username">${username}</p>` }
+
+        ${username ? 
+        html`<form id="logout" action="/logout" method="post">
+            <button name="logout" id="logout-button" type="submit">Log out ${username}</button>
+        </form>`
+        : 
+        html`<form id="login" action="/auth/login" method="post">
+            <p>
+                <input id="username" name="username" type="text" placeholder="username">
+            </p>
+            <p>
+                <input id="password" name="password" type="password" placeholder="password">
+            </p>
+            <button id="login-button" name="login" type="submit">Log in</button>
+        </form>` 
+      }
+    </body>
+  </html>`)
+})
+
 
 export default session_routes;
