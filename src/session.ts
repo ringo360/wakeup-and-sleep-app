@@ -4,6 +4,7 @@ import { CheckPass } from "./util"
 import { logger } from "hono/logger"
 import { cors } from "hono/cors"
 import {html} from 'hono/html'
+import { getCookie, getSignedCookie, setCookie, setSignedCookie, deleteCookie } from 'hono/cookie'
 
 const store = new CookieStore()
 const session_routes = new Hono<{
@@ -48,9 +49,11 @@ session_routes.post('/login', async (c) => {
         c.set('session_key_rotation', true)
         session.set('username', username)
         session.set('failed-login-attempts', null)
-        session.flash('result', 'success')
+        await session.flash('result', 'success')
+        const x = getCookie(c, 'session')
         return c.json({
-            'Result': 'OK'
+            'Result': 'OK',
+            'Session': x
         })
     } else {
         console.log('Failed')
@@ -100,7 +103,7 @@ session_routes.get('/dev', (c) => {
         ${ username && html`<p id="username">${username}</p>` }
 
         ${username ? 
-        html`<form id="logout" action="/logout" method="post">
+        html`<form id="logout" action="/auth/logout" method="post">
             <button name="logout" id="logout-button" type="submit">Log out ${username}</button>
         </form>`
         : 
