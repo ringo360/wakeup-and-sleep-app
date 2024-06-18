@@ -5,14 +5,12 @@ import { logger } from "hono/logger"
 import { addusr, findusr, genRefToken, genAccToken, CheckPass } from "./util"
 import { JWTSecret, port } from "./config"
 import { verify } from "hono/jwt"
-import session_routes from "./auth"
-import server from "./app"
+import auth from "./auth"
 
 //p-dev.ringoxd.dev
 const app = new Hono()
 
-app.route('/', session_routes)
-app.route('/', server)
+app.route('/', auth)
 
 app.use(logger())
 
