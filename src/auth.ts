@@ -37,7 +37,6 @@ auth.post('/login', async (c) => {
       const x = res[1]
       console.log('ok!')
         return c.json({
-            'Result': 'OK',
             't': x
         })
     } else {
