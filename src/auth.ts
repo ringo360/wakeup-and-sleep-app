@@ -70,7 +70,7 @@ auth.get('/acctoken', async (c) => {
   }
   return c.json({
     "OK": "Generated!",
-    "AccessToken": res[1]
+    "t": res[1]
   })
 })
 
