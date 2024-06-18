@@ -79,6 +79,7 @@ auth.get('/info', async (c) => {
   const token = c.req.header('X-Token')
   console.log(token)
   if (!token || token == undefined) {
+    console.log('undefinedmoment')
     return c.json({
       'Error': 'Invalid Request'
     }, 400)
