@@ -5,7 +5,7 @@ import { logger } from "hono/logger"
 import { addusr, findusr, genRefToken, genAccToken, CheckPass } from "./util"
 import { JWTSecret, port } from "./config"
 import { verify } from "hono/jwt"
-import session_routes from "./session"
+import session_routes from "./auth"
 import server from "./app"
 
 //p-dev.ringoxd.dev
