@@ -14,7 +14,7 @@ export const delay = (ms: any) => new Promise((resolve) => setTimeout(resolve, m
 
 /**
  * hono/jwtによるリフレッシュトークンを生成します。
- * このtokenには期限がないため、丁寧に扱う必要があります!
+ * このtokenは7日で失効します。
  * 
  * [!]このfunctionは非同期(async)です！
  * @param user ユーザー名
@@ -26,6 +26,7 @@ export async function genRefToken(user:string, pass:string) {
     const payload = {
       user: user,
       password: pass,
+      exp: Math.floor(getJSTNow().getTime() / 1000) + 7 * 24 * 60 * 60 //7(d)*24(h)*60(m)*60(s)*1000(ms)
     }
     const token = await sign(payload, JWTSecret)
     console.log(`[genRefToken] ${token}`)
@@ -38,7 +39,8 @@ export async function genRefToken(user:string, pass:string) {
 }
 
 /**
- * リフレッシュトークンを利用してアクセストークンを取得します。期限は10分です。
+ * リフレッシュトークンを利用してアクセストークンを取得します。
+ * このtokenは10分で失効します。
  *
  * [!]このfunctionは非同期(async)です！
  * @param refToken リフレッシュトークン(genRefToken()で取得したもの)
@@ -49,7 +51,7 @@ export async function genAccToken(refToken:string) {
     console.log('Generating')
     const payload = {
       token: refToken,
-      exp: Math.floor(getJSTNow().getTime() / 1000) + 60 * 1 //1min token
+      exp: Math.floor(getJSTNow().getTime() / 1000) + 60 * 1 //1min token for dev
     }
     console.log('Signing...')
     const token = await sign(payload, JWTSecret)
