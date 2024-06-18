@@ -102,6 +102,14 @@ auth.post('/logout', async (c) => {
   try {
     const body = await c.req.parseBody()
     const { t } = body
+    try {
+      await verify(t as string, JWTSecret)
+      console.log('OK')
+    } catch {
+      return c.json({
+        'Result': 'Invalid Request'
+      }, 400)
+    }
     t_disabler.add(t as string)
     return c.json({
       'Result': 'OK'
