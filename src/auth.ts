@@ -4,7 +4,8 @@ import { logger } from "hono/logger"
 import { cors } from "hono/cors"
 import { JWTSecret } from "./config"
 import { verify } from "hono/jwt"
-import { genRefToken, genAccToken } from "./util"
+import { genRefToken, genAccToken, TokenDisabler } from "./util"
+const t_disabler = new TokenDisabler()
 
 const auth = new Hono()
 auth.use(logger())
@@ -80,8 +81,18 @@ auth.get('/info', async (c) => {
 })
 
 auth.post('/logout', async (c) => {
+  try {
+    const body = await c.req.parseBody()
+    const { t } = body
+    t_disabler.add(t as string)
     return c.json({
-        'Result': 'OK'
+      'Result': 'OK'
     })
+  } catch (e) {
+    console.error(e)
+    return c.json({
+      'Result': 'Failed (check server log)'
+    }, 500)
+  }
 })
 export default auth;

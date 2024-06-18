@@ -2,9 +2,8 @@ import { Hono } from "hono"
 import { serve } from "@hono/node-server"
 import { cors } from "hono/cors"
 import { logger } from "hono/logger"
-import { addusr, findusr, genRefToken, genAccToken, CheckPass } from "./util"
-import { JWTSecret, port } from "./config"
-import { verify } from "hono/jwt"
+import { addusr, findusr, genRefToken } from "./util"
+import { port } from "./config"
 import auth from "./auth"
 
 //p-dev.ringoxd.dev

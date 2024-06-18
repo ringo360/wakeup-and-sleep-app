@@ -218,3 +218,48 @@ export function log_wakeup(username: string) {
   console.log('[wakeup] ok!')
   return true;
 }
+
+const exp_sec = 600;
+
+const exp_ms = 1000 * exp_sec;
+console.log(`Exp time: ${exp_ms}`);
+
+/**
+ * Tokenを無効化するためのリストを操作します。
+ */
+export class TokenDisabler {
+	private list: string[] = [];
+
+  /**
+   * リストに追加します。指定された期間が経過後に削除されます。
+   * @param item token
+   */
+	add(item: string) {
+		this.list.push(item);
+		console.log(`[TD] added ${item}.`);
+
+		setTimeout(() => {
+			this.remove(item);
+		}, exp_ms);
+	}
+
+  /**
+   * リストから削除します。
+   * @param item token
+   */
+	remove(item: string) {
+		const index = this.list.indexOf(item);
+		if (index !== -1) {
+			this.list.splice(index, 1);
+			console.log(`[TD] removed ${item}.`);
+		}
+	}
+
+  /**
+   * リストを取得します。
+   * @returns ['token', 'token2', ..]
+   */
+	getList() {
+		return this.list;
+	}
+}
