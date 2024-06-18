@@ -2,6 +2,9 @@ import { Hono } from "hono"
 import { CheckPass } from "./util"
 import { logger } from "hono/logger"
 import { cors } from "hono/cors"
+import { JWTSecret } from "./config"
+import { verify } from "hono/jwt"
+import { genRefToken, genAccToken } from "./util"
 
 const auth = new Hono()
 auth.use(logger())
@@ -13,7 +16,6 @@ auth.use(cors({
 
 auth.post('/login', async (c) => {
     const body = await c.req.parseBody()
-    console.log(c.req.header('Content-Type'))
     console.log(body)
     const { username, password } = body
     if (!username || !password) {
@@ -23,11 +25,19 @@ auth.post('/login', async (c) => {
       }, 400)
     }
     if (CheckPass(username as string, password as string) === true) {
-      const x = ''
+      const res = await genRefToken(username as string, password as string)
+      console.log(res)
+      const isok = res[0]
+      if (isok !== true) {
+        return c.json({
+          "Error": res[1]
+        }, 500)
+      }
+      const x = res[1]
       console.log('ok!')
         return c.json({
             'Result': 'OK',
-            'Session': x
+            't': x
         })
     } else {
         console.log('Failed')
@@ -36,6 +46,34 @@ auth.post('/login', async (c) => {
         }, 400)
     }
 })
+
+auth.get('/acctoken', async (c) => {
+  console.log('Fire')
+  const token = c.req.header('X-Token')
+  if (!token) return c.json({"Error": "Body is invalid"})
+  console.log(token)
+  try {
+    await verify(token as string, JWTSecret)
+  } catch (e) {
+    return c.json({
+      "Error": "Invalid Token"
+    })
+  }
+  console.log('Generating')
+  const res = await genAccToken(token as string)
+  console.log(res)
+  const isok = res[0]
+  if (isok !== true) {
+    return c.json({
+      "Error": res[1]
+    }, 500)
+  }
+  return c.json({
+    "OK": "Generated!",
+    "AccessToken": res[1]
+  })
+})
+
 
 auth.get('/info', async (c) => {
   console.log('a')

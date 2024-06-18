@@ -19,32 +19,6 @@ app.use('/v1/*', cors({
   allowMethods: ['GET', 'POST', 'DELETE']
 }))
 
-app.get('/v1/user/acctoken', async (c) => {
-  console.log('Fire')
-  const token = c.req.header('X-Token')
-  if (!token) return c.json({"Error": "Body is invalid"})
-  console.log(token)
-  try {
-    await verify(token as string, JWTSecret)
-  } catch (e) {
-    return c.json({
-      "Error": "Invalid Token"
-    })
-  }
-  console.log('Generating')
-  const res = await genAccToken(token as string)
-  console.log(res)
-  const isok = res[0]
-  if (isok !== true) {
-    return c.json({
-      "Error": res[1]
-    }, 500)
-  }
-  return c.json({
-    "OK": "Generated AccessToken!",
-    "AccessToken": res[1]
-  })
-})
 
 app.post('/v1/user', async (c) => {
   try {
