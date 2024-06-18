@@ -96,7 +96,7 @@ auth.get('/info', async (c) => {
   } catch (e) {
     return c.json({
       'Error': `${e}`
-    })
+    }, 500)
   }
 })
 
