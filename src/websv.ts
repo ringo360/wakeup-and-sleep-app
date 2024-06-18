@@ -9,7 +9,7 @@ import auth from "./auth"
 //p-dev.ringoxd.dev
 const app = new Hono()
 
-app.route('/', auth)
+app.route('/auth', auth)
 
 app.use(logger())
 
