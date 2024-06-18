@@ -76,22 +76,28 @@ auth.get('/acctoken', async (c) => {
 
 
 auth.get('/info', async (c) => {
-  const token = c.req.header('X-Token')
-  console.log(token)
-  if (!token || token == undefined) {
-    console.log('undefinedmoment')
+  try {
+    const token = c.req.header('X-Token')
+    console.log(token)
+    if (!token || token == undefined) {
+      console.log('undefinedmoment')
+      return c.json({
+        'Error': 'Invalid Request'
+      }, 400)
+    }
+    const v_res = await verify(token, JWTSecret)
+    console.log(v_res) //for dev
+    const res = await decode(token)
+    console.log(res) //for dev
     return c.json({
-      'Error': 'Invalid Request'
-    }, 400)
+      'OK': 'Success!',
+      'res': res
+    })
+  } catch (e) {
+    return c.json({
+      'Error': `${e}`
+    })
   }
-  const v_res = await verify(token, JWTSecret)
-  console.log(v_res) //for dev
-  const res = await decode(token)
-  console.log(res) //for dev
-  return c.json({
-    'OK': 'Success!',
-    'res': res
-  })
 })
 
 auth.post('/logout', async (c) => {
