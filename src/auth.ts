@@ -2,10 +2,14 @@ import { Hono } from "hono"
 import { CheckPass } from "./util"
 import { logger } from "hono/logger"
 import { cors } from "hono/cors"
-import {html} from 'hono/html'
 
 const auth = new Hono()
 auth.use(logger())
+
+auth.use(cors({
+  'origin': '*',
+  'allowMethods': ['GET', 'POST']
+}))
 
 auth.post('/login', async (c) => {
     const body = await c.req.parseBody()
