@@ -3,7 +3,7 @@ import { CheckPass } from "./util"
 import { logger } from "hono/logger"
 import { cors } from "hono/cors"
 import { JWTSecret } from "./config"
-import { verify } from "hono/jwt"
+import { decode, verify } from "hono/jwt"
 import { genRefToken, genAccToken, TokenDisabler } from "./util"
 const t_disabler = new TokenDisabler()
 
@@ -77,7 +77,20 @@ auth.get('/acctoken', async (c) => {
 
 
 auth.get('/info', async (c) => {
-  console.log('a')
+  const token = c.req.header('X-Token')
+  if (!token) {
+    return c.json({
+      'Error': 'Invalid Request'
+    }, 400)
+  }
+  const v_res = await verify(token, JWTSecret)
+  console.log(v_res) //for dev
+  const res = await decode(token)
+  console.log(res) //for dev
+  return c.json({
+    'OK': 'Success!',
+    'res': res
+  })
 })
 
 auth.post('/logout', async (c) => {
