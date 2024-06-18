@@ -87,11 +87,9 @@ auth.get('/info', async (c) => {
     }
     const v_res = await verify(token, JWTSecret)
     console.log(v_res) //for dev
-    const res = await decode(token)
-    console.log(res) //for dev
     return c.json({
       'OK': 'Success!',
-      'res': res
+      'res': v_res
     })
   } catch (e) {
     return c.json({
