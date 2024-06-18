@@ -78,7 +78,7 @@ auth.get('/acctoken', async (c) => {
 auth.get('/info', async (c) => {
   const token = c.req.header('X-Token')
   console.log(token)
-  if (!token) {
+  if (!token || token == undefined) {
     return c.json({
       'Error': 'Invalid Request'
     }, 400)
