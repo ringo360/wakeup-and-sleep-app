@@ -18,6 +18,11 @@ app.use('/v1/*', cors({
   allowMethods: ['GET', 'POST', 'DELETE']
 }))
 
+app.options('*', async (c) => {
+  return c.json({
+    'Status': 'OK'
+  })
+})
 
 app.post('/v1/user', async (c) => {
   try {
