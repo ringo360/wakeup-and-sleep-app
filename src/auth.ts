@@ -12,7 +12,8 @@ auth.use(logger())
 
 auth.use(cors({
   'origin': '*',
-  'allowMethods': ['GET', 'POST']
+  'allowMethods': ['GET', 'POST'],
+  'allowHeaders': ['cache-control', 'pragma']
 }))
 
 auth.post('/login', async (c) => {
