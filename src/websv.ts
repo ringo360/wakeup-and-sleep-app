@@ -16,7 +16,7 @@ app.use(logger())
 app.use('/v1/*', cors({
   origin: '*',
   allowMethods: ['GET', 'POST', 'DELETE'],
-  allowHeaders: ['cache-control', 'pragma']
+  allowHeaders: ['*']
 }))
 
 app.options('*', async (c) => {
