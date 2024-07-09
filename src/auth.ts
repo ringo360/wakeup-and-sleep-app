@@ -93,6 +93,12 @@ auth.get('/info', async (c) => {
       'res': v_res
     })
   } catch (e) {
+    const err = e as string
+    if (err.includes('JwtTokenExpired')) {
+      return c.json({
+        'Error': 'Invalid token'
+      }, 400)
+    }
     return c.json({
       'Error': `${e}`
     }, 500)
