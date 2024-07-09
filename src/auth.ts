@@ -95,6 +95,7 @@ auth.get('/info', async (c) => {
     if (v_res) {
       accT = verify(v_res.token, JWTSecret)
     }
+    console.log(accT)
     return c.json({
       'OK': 'Success!',
       'res': accT
