@@ -134,4 +134,11 @@ auth.post('/logout', async (c) => {
     }, 500)
   }
 })
+
+auth.onError((err, c) => {
+  return c.json({
+    'Error': `${err}`
+  }, 500)
+})
+
 export default auth;
