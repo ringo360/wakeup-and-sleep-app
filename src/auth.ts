@@ -89,7 +89,8 @@ auth.get('/info', async (c) => {
     const v_res = await verify(token, JWTSecret)
     console.log(v_res) //for dev
     let accT;
-    console.log(`res is ${v_res}`)
+    console.log(`res is:`)
+    console.log(v_res)
     console.log(`t: ${v_res.token}`)
     if (v_res) {
       accT = verify(v_res.token, JWTSecret)
