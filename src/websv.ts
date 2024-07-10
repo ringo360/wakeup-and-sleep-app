@@ -2,7 +2,7 @@ import { Hono } from "hono"
 import { serve } from "@hono/node-server"
 import { cors } from "hono/cors"
 import { logger } from "hono/logger"
-import { addusr, findusr, genRefToken } from "./util"
+import { addusr, findusr, genRefToken, log_sleep } from "./util"
 import { port } from "./config"
 import auth from "./auth"
 
@@ -80,6 +80,12 @@ app.get('/find/:user', async (c) => {
       "error": `cannot find ${target}`
     }, 404)
   }
+})
+
+app.post('/v1/sleep', async (c) => {
+  const body = await c.req.parseBody()
+  const { token } = body
+  
 })
 
 

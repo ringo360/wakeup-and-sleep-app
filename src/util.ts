@@ -183,6 +183,21 @@ export function getnum(target: string) {
 }
 
 /**
+ * reflesh tokenからユーザーの情報を取得します。
+ * @param token token(reflesh token)
+ * @returns ref or null
+ */
+export async function getInfofromRef(token: string) {
+  const a_res = await verify(token, JWTSecret)
+  if (a_res) {
+    const ref = await verify(a_res.token, JWTSecret)
+    return ref
+  } else {
+    return null;
+  }
+}
+
+/**
  * 就寝時に使われます。
  * @param username ユーザー名(string)
  * @returns boolean
