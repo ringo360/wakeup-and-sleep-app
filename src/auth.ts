@@ -86,19 +86,20 @@ auth.get('/info', async (c) => {
         'Error': 'Invalid Request'
       }, 400)
     }
-    const accT = await getInfofromRef(token)
+    let accT;
+    try {
+      accT = await getInfofromRef(token)
+    } catch (e) {
+      return c.json({
+        'Error': `${e}`
+      }, 400)
+    }
     console.log(accT)
     return c.json({
       'OK': 'Success!',
       'res': accT
     })
   } catch (e) {
-    const err = e as string
-    if (err.includes('JwtTokenExpired')) {
-      return c.json({
-        'Error': 'Invalid token'
-      }, 400)
-    }
     return c.json({
       'Error': `${e}`
     }, 500)
