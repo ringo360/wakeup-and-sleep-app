@@ -86,7 +86,7 @@ auth.get('/info', async (c) => {
         'Error': 'Invalid Request'
       }, 400)
     }
-    const accT = getInfofromRef(token)
+    const accT = await getInfofromRef(token)
     console.log(accT)
     return c.json({
       'OK': 'Success!',
