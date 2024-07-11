@@ -92,7 +92,7 @@ auth.get('/info', async (c) => {
     } catch (e) {
       return c.json({
         'Error': `${e}`
-      }, 400)
+      }, 401)
     }
     console.log(accT)
     return c.json({
