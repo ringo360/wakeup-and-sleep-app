@@ -1,5 +1,5 @@
 import { Hono } from "hono"
-import { CheckPass } from "./util"
+import { CheckPass, getInfofromRef } from "./util"
 import { logger } from "hono/logger"
 import { cors } from "hono/cors"
 import { JWTSecret } from "./config"
@@ -86,15 +86,7 @@ auth.get('/info', async (c) => {
         'Error': 'Invalid Request'
       }, 400)
     }
-    const v_res = await verify(token, JWTSecret)
-    console.log(v_res) //for dev
-    let accT;
-    console.log(`res is:`)
-    console.log(v_res)
-    console.log(`t: ${v_res.token}`)
-    if (v_res) {
-      accT = await verify(v_res.token, JWTSecret)
-    }
+    const accT = getInfofromRef(token)
     console.log(accT)
     return c.json({
       'OK': 'Success!',

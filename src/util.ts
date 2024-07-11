@@ -191,7 +191,7 @@ export async function getInfofromRef(token: string) {
   const a_res = await verify(token, JWTSecret)
   if (a_res) {
     const ref = await verify(a_res.token, JWTSecret)
-    return ref.token
+    return ref
   } else {
     return null;
   }
