@@ -156,10 +156,34 @@ export function addusr(username: string, password: string) {
   } else {
     //something
     db.exec(`insert into UserList(usrname, password, creationdate) values('${username}', '${password}', '${getJSTDate(new Date())}');`)
+    db.exec(`insert into UserData(usrname, isSleeping) values('${username}', 'false')`)
+    // db.exec(`update UserData SET isSleeping = 'true' where usrname = '${username}'`) dev
+    isSleeping(username)
     console.log(`[AddUser] Added ${username}!`)
     return 'ok'
   }
   
+}
+
+export function isSleeping(username: string) {
+  const result = db.prepare(`SELECT EXISTS(SELECT 1 FROM UserData WHERE usrname = '${username}' AND isSleeping = 'true');`).get()
+  console.log(`[dev-issleep] fetching`)
+  console.log(result)
+}
+/**
+ * ユーザーが睡眠中であるか否かの状態をセットします。
+ * @param username ユーザー名(string)
+ * @param bool 睡眠中か否か(boolean)
+ * @returns 
+ */
+export function changeIsSleepState(username: string, bool: boolean) {
+  try {
+    db.exec(`update UserData SET isSleeping = '${bool}' where usrname = '${username}';`)
+    return true;
+  } catch (e) {
+    console.error(e)
+    return false;
+  }
 }
 
 /**
@@ -196,6 +220,23 @@ export async function getInfofromRef(token: string) {
     return null;
   }
 }
+
+
+/**
+ * Tokenが有効であるかをチェックするためのものです。
+ * @param token token(Access tokenまたはReflesh token)
+ */
+export async function IsValidToken(token: string) {
+  try {
+    await verify(token, JWTSecret)
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+
+
 
 /**
  * 就寝時に使われます。
