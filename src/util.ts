@@ -157,7 +157,7 @@ export function addusr(username: string, password: string) {
     //something
     db.exec(`insert into UserList(usrname, password, creationdate) values('${username}', '${password}', '${getJSTDate(new Date())}');`)
     db.exec(`insert into UserData(usrname, isSleeping) values('${username}', 'false')`)
-    // db.exec(`update UserData SET isSleeping = 'true' where usrname = '${username}'`) dev
+    // db.exec(`update UserData SET isSleeping = 'true' where usrname = '${username}'`)
     isSleeping(username)
     console.log(`[AddUser] Added ${username}!`)
     return 'ok'
@@ -166,9 +166,15 @@ export function addusr(username: string, password: string) {
 }
 
 export function isSleeping(username: string) {
-  const result = db.prepare(`SELECT EXISTS(SELECT 1 FROM UserData WHERE usrname = '${username}' AND isSleeping = 'true');`).get()
+  const result = db.prepare(`
+    SELECT CASE WHEN EXISTS(SELECT 1 FROM UserData WHERE usrname = ? AND isSleeping = 'true') THEN 1 ELSE 0 END
+  `).get(username);
   console.log(`[dev-issleep] fetching`)
-  console.log(result)
+  const resAsAny = result as any;
+  const exists = resAsAny["CASE WHEN EXISTS(SELECT 1 FROM UserData WHERE usrname = ? AND isSleeping = 'true') THEN 1 ELSE 0 END"];
+  if (exists == 0) return false;
+  if (exists == 1) return true;
+  else return null;
 }
 /**
  * ユーザーが睡眠中であるか否かの状態をセットします。
