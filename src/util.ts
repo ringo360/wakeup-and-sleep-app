@@ -169,6 +169,8 @@ export function isSleeping(username: string) {
   const result = db.prepare(`SELECT EXISTS(SELECT 1 FROM UserData WHERE usrname = '${username}' AND isSleeping = 'true');`).get()
   console.log(`[dev-issleep] fetching`)
   console.log(result)
+  //todo: do it
+  return true;
 }
 /**
  * ユーザーが睡眠中であるか否かの状態をセットします。
