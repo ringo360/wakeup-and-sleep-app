@@ -244,12 +244,13 @@ export async function IsValidToken(token: string) {
 
 
 
+
 /**
  * 就寝時に使われます。
  * @param username ユーザー名(string)
  * @returns boolean
  */
-export function log_sleep(username: string) {
+export function sleep_db(username: string) {
   //TODO: 努力
   try {
     db.exec(`insert into SleepData(num, usrname, sleepdate) values('${getnum(username) + 1}', '${username}', '${getJSTDate()}');`)
@@ -265,7 +266,7 @@ export function log_sleep(username: string) {
  * @param username ユーザー名(string)
  * @returns boolean
  */
-export function log_wakeup(username: string) {
+export function wakeup_db(username: string) {
   //https://qiita.com/minhee/items/8de52f4bffb886c68b99 みなさい
   //TODO: やりましょう
   //ex UPDATE 家計簿 SET 出金額　= 1500 WHERE 日付 = '2021-08-03'
