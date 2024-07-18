@@ -241,8 +241,31 @@ export async function IsValidToken(token: string) {
   }
 }
 
-
-
+/**
+ * 睡眠を記録します。isSleepingの値を参考に自動で起床・睡眠の処理を実行します。
+ * @param username ユーザー名(string)
+ */
+export function sleep(username: string) {
+  const is = isSleeping(username)
+  if (is === false) {
+    sleep_db(username)
+    return {
+      'success': true,
+      'isSleeping': is
+    }
+  }
+  if (is === true) {
+    wakeup_db(username)
+    return {
+      'success': true,
+      'isSleeping': is
+    }
+  }
+  else {
+    console.error('Failed to check isSleeping')
+    return null;
+  }
+}
 
 
 /**
