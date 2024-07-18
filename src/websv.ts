@@ -94,6 +94,10 @@ app.post('/v1/sleep', async (c) => {
       "error": 'Database returned false response'
     }, 500)
   }
+    return c.json({
+      "status": "OK",
+      "isSleeping": res.isSleeping
+    })
 
 })
 
