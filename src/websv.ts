@@ -2,7 +2,7 @@ import { Hono } from "hono"
 import { serve } from "@hono/node-server"
 import { cors } from "hono/cors"
 import { logger } from "hono/logger"
-import { addusr, findusr, genRefToken } from "./util"
+import { addusr, findusr, genRefToken, IsValidToken, sleep } from "./util"
 import { port } from "./config"
 import auth from "./auth"
 
@@ -84,8 +84,17 @@ app.get('/find/:user', async (c) => {
 
 app.post('/v1/sleep', async (c) => {
   const body = await c.req.parseBody()
-  const { token } = body
-  // const sleeping = await
+  const { token, username } = body
+  if (await IsValidToken(token as string) === false) return c.json({
+    'Result': 'Invalid token.'
+  }, 400)
+  const res = await sleep(username as string)
+  if (!res?.success) {
+    return c.json({
+      "error": 'Database returned false response'
+    }, 500)
+  }
+
 })
 
 
