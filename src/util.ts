@@ -272,17 +272,17 @@ export async function IsValidToken(token: string) {
  * 睡眠を記録します。isSleepingの値を参考に自動で起床・睡眠の処理を実行します。
  * @param username ユーザー名(string)
  */
-export function sleep(username: string) {
+export function sleep(username: string, date: string) {
   const is = isSleeping(username);
   if (is === false) {
-    sleep_db(username);
+    sleep_db(username, date);
     return {
       success: true,
       isSleeping: is,
     };
   }
   if (is === true) {
-    wakeup_db(username);
+    wakeup_db(username, date);
     return {
       success: true,
       isSleeping: is,
@@ -298,11 +298,11 @@ export function sleep(username: string) {
  * @param username ユーザー名(string)
  * @returns boolean
  */
-export function sleep_db(username: string) {
+export function sleep_db(username: string, date: string) {
   //TODO: 努力
   try {
     db.exec(
-      `insert into SleepData(num, usrname, sleepdate) values('${getnum(username) + 1}', '${username}', '${getJSTDate()}');`,
+      `insert into SleepData(num, usrname, sleepdate) values('${getnum(username) + 1}', '${username}', '${date}');`,
     );
     return true;
   } catch (e) {
@@ -316,7 +316,7 @@ export function sleep_db(username: string) {
  * @param username ユーザー名(string)
  * @returns boolean
  */
-export function wakeup_db(username: string) {
+export function wakeup_db(username: string, date: string) {
   //https://qiita.com/minhee/items/8de52f4bffb886c68b99 みなさい
   //TODO: やりましょう
   //ex UPDATE 家計簿 SET 出金額　= 1500 WHERE 日付 = '2021-08-03'
@@ -328,7 +328,7 @@ export function wakeup_db(username: string) {
     return false;
   }
   db.exec(
-    `update SleepData SET wakeupdate = '${getJSTDate()}' where num = '${num}' and usrname = '${username}'`,
+    `update SleepData SET wakeupdate = '${date}' where num = '${num}' and usrname = '${username}'`,
   );
   console.log('[wakeup] ok!');
   return true;

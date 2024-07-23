@@ -108,7 +108,7 @@ app.post('/v1/sleep', async (c) => {
     return c.json({
       Result: 'Invalid token.',
     },400);
-  const res = await sleep(username as string);
+  const res = await sleep(username as string, date as string);
   if (!res?.success) {
     //prettier-ignore
     return c.json({
