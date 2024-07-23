@@ -130,7 +130,7 @@ app.notFound((c) => {
 });
 
 console.log(`Listening port ${port}`);
-serve({
+export const websv = serve({
   fetch: app.fetch,
   port,
 });

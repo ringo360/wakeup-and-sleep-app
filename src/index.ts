@@ -2,15 +2,11 @@
 //READ https://github.com/WiseLibs/better-sqlite3/
 //READ https://gist.github.com/bonniss/2fb3853640510b697ca38255ec6bd282
 
-/*
-const dev_x = db.prepare("select * from UserList").all()
-console.log(dev_x)
-*/
-
 import { ConfigChecker } from './config';
 import { db, initdb } from './db';
 import { addusr } from './util'; //dev
 import './websv';
+import { websv } from './websv';
 
 /**
  * データベースの初期化などを行います。
@@ -47,6 +43,7 @@ process.on('SIGTERM', shutdown);
 async function shutdown() {
   console.log('Shutdown...');
   db.close();
+  websv.close();
   console.log('[SQLite] Closed');
   console.log('Goodbye');
   process.exit(0);
