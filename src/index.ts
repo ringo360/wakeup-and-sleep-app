@@ -44,7 +44,6 @@ async function shutdown() {
   console.log('Shutdown...');
   db.close();
   websv.close();
-  console.log('[SQLite] Closed');
   console.log('Goodbye');
   process.exit(0);
 }

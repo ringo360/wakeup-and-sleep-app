@@ -97,7 +97,12 @@ app.get('/find/:user', async (c) => {
 
 app.post('/v1/sleep', async (c) => {
   const body = await c.req.parseBody();
-  const { token, username } = body;
+  const { token, username, date } = body;
+  if (!token || !username || !date) {
+    return c.json({
+      'Result': 'Invalid body.'
+    },400)
+  }
   if ((await IsValidToken(token as string)) === false)
     //prettier-ignore
     return c.json({
