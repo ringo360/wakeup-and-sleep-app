@@ -123,7 +123,9 @@ app.post('/v1/sleep', async (c) => {
 });
 
 app.notFound((c) => {
-  return c.text('404 - Are you lost?', 404);
+  return c.json({
+    'Error': '404 not found'
+  }, 404)
 });
 
 console.log(`Listening port ${port}`);
