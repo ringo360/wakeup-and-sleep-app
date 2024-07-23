@@ -98,6 +98,7 @@ app.get('/find/:user', async (c) => {
 app.post('/v1/sleep', async (c) => {
   const body = await c.req.parseBody();
   const { token, username, date } = body;
+  //dateは2024/07/23 | 23:30 | 6:30 の形にする。('|' で区切りやすくする)
   if (!token || !username || !date) {
     return c.json({
       'Result': 'Invalid body.'
