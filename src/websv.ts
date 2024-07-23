@@ -35,12 +35,9 @@ app.post('/v1/user', async (c) => {
     const body = await c.req.parseBody();
     const { username, password } = body;
     if (!username || !password) {
-      return c.json(
-        {
-          Error: 'Invalid body(need username and password)',
-        },
-        400,
-      ); //read http.cat
+      return c.json({
+        Error: 'Invalid body(need username and password)',
+      },400);
     } else {
       const res = addusr(username as string, password as string);
       if (res === 'ok') {
@@ -91,12 +88,10 @@ app.get('/find/:user', async (c) => {
       date: x.creationdate,
     });
   } else {
-    return c.json(
-      {
-        error: `cannot find ${target}`,
-      },
-      404,
-    );
+    //prettier-ignore
+    return c.json({
+      error: `cannot find ${target}`,
+    },404);
   }
 });
 
@@ -104,20 +99,16 @@ app.post('/v1/sleep', async (c) => {
   const body = await c.req.parseBody();
   const { token, username } = body;
   if ((await IsValidToken(token as string)) === false)
-    return c.json(
-      {
-        Result: 'Invalid token.',
-      },
-      400,
-    );
+    //prettier-ignore
+    return c.json({
+      Result: 'Invalid token.',
+    },400);
   const res = await sleep(username as string);
   if (!res?.success) {
-    return c.json(
-      {
+    //prettier-ignore
+    return c.json({
         error: 'Database returned false response',
-      },
-      500,
-    );
+      },500);
   }
   return c.json({
     status: 'OK',
