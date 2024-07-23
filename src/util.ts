@@ -260,6 +260,8 @@ export async function getInfofromRef(token: string) {
  * @param token token(Access tokenまたはReflesh token)
  */
 export async function IsValidToken(token: string) {
+  const td = new TokenDisabler()
+  if (td.getList().includes(token)) return false;
   try {
     await verify(token, JWTSecret);
     return true;
@@ -333,6 +335,7 @@ export function wakeup_db(username: string, date: string) {
   console.log('[wakeup] ok!');
   return true;
 }
+
 
 const exp_sec = 600;
 
