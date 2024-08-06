@@ -2,7 +2,7 @@ import { Hono } from 'hono';
 import { serve } from '@hono/node-server';
 import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
-import { addusr, findusr, genRefToken, IsValidToken, sleep } from './util';
+import { addusr, findusr, genRefToken, getSleepData, IsValidToken, sleep } from './util';
 import { port } from './config';
 import auth from './auth';
 
@@ -35,9 +35,12 @@ app.post('/v1/user', async (c) => {
     const body = await c.req.parseBody();
     const { username, password } = body;
     if (!username || !password) {
-      return c.json({
-        Error: 'Invalid body(need username and password)',
-      },400);
+      return c.json(
+        {
+          Error: 'Invalid body(need username and password)',
+        },
+        400,
+      );
     } else {
       const res = addusr(username as string, password as string);
       if (res === 'ok') {
@@ -95,11 +98,25 @@ app.get('/find/:user', async (c) => {
   }
 });
 
+app.get('/v1/sleep', async (c) => {
+	const token = c.req.header('X-Token')
+	const username = c.req.header('X-UserName')
+  if (!token || !username) {
+    //prettier-ignore
+    return c.json({
+		'Result': 'Invalid body.'
+	},400)
+  }
+  const result = await getSleepData(username as string)
+  return c.json(result)
+});
+
 app.post('/v1/sleep', async (c) => {
   const body = await c.req.parseBody();
   const { token, username, date } = body;
   //dateは2024/07/23 | 23:30 | 6:30 の形にする。('|' で区切りやすくする)
   if (!token || !username || !date) {
+    //prettier-ignore
     return c.json({
       'Result': 'Invalid body.'
     },400)
@@ -123,9 +140,12 @@ app.post('/v1/sleep', async (c) => {
 });
 
 app.notFound((c) => {
-  return c.json({
-    'Error': '404 not found'
-  }, 404)
+  return c.json(
+    {
+      Error: '404 not found',
+    },
+    404,
+  );
 });
 
 console.log(`Listening port ${port}`);

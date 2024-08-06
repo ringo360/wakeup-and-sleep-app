@@ -260,7 +260,7 @@ export async function getInfofromRef(token: string) {
  * @param token token(Access tokenまたはReflesh token)
  */
 export async function IsValidToken(token: string) {
-  const td = new TokenDisabler()
+  const td = new TokenDisabler();
   if (td.getList().includes(token)) return false;
   try {
     await verify(token, JWTSecret);
@@ -313,6 +313,33 @@ export function sleep_db(username: string, date: string) {
   }
 }
 
+type SleepDataRow = {
+  num: number;
+  sleepdate: string;
+  wakeupdate: string;
+};
+
+export function getSleepData(username: string): {
+  [key: number]: { sleepdate: string; wakeupdate: string };
+} {
+  const stmt = db.prepare(
+    'SELECT num, sleepdate, wakeupdate FROM SleepData WHERE usrname = ?',
+  );
+  const rows = stmt.all(username) as SleepDataRow[];
+
+  // JSON形式に変換
+  const result: { [key: number]: { sleepdate: string; wakeupdate: string } } =
+    {};
+  rows.forEach((row) => {
+    result[row.num] = {
+      sleepdate: row.sleepdate,
+      wakeupdate: row.wakeupdate,
+    };
+  });
+
+  return result;
+}
+
 /**
  * 起床時に使われます。
  * @param username ユーザー名(string)
@@ -335,7 +362,6 @@ export function wakeup_db(username: string, date: string) {
   console.log('[wakeup] ok!');
   return true;
 }
-
 
 const exp_sec = 600;
 
