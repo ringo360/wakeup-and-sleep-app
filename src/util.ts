@@ -375,10 +375,12 @@ export function db_deleteOne(username: string) {
   	const rows = selectStmt.all(username) as SleepDataRow[];
 	
 	if (rows.length > 0) {
-		// 取得したデータを削除
 		const deleteStmt = db.prepare('DELETE FROM SleepData WHERE num = ? AND usrname = ?');
 		console.log(rows[0])
 		console.log(rows[0].num)
+	    deleteStmt.run(rows[0].num, username);
+	    deleteStmt.run(rows[0].num, username);
+	    deleteStmt.run(rows[0].num, username);
 	    deleteStmt.run(rows[0].num, username);
 		console.log(`Deleted record with num: ${rows[0].num}`);
 		return true;
