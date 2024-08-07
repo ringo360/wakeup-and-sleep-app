@@ -371,14 +371,16 @@ export function wakeup_db(username: string, date: string) {
 }
 
 export function db_deleteOne(username: string) {
-	const selectStmt = db.prepare('SELECT num FROM SleepData WHERE usrname = ? ORDER BY sleepdate ASC LIMIT 1');
-	const row = selectStmt.get(username) as SleepDataRow | undefined;
+	const selectStmt = db.prepare('SELECT num FROM SleepData WHERE usrname = ? ORDER BY sleepdate ASC');
+  	const rows = selectStmt.all(username) as SleepDataRow[];
 	
-	if (row) {
+	if (rows.length > 0) {
 		// 取得したデータを削除
-		const deleteStmt = db.prepare('DELETE FROM SleepData WHERE num = ?');
-		deleteStmt.run(row.num);
-		console.log(`Deleted record with num: ${row.num}`);
+		const deleteStmt = db.prepare('DELETE FROM SleepData WHERE num = ? AND usrname = ?');
+		console.log(rows[0])
+		console.log(rows[0].num)
+	    deleteStmt.run(rows[0].num, username);
+		console.log(`Deleted record with num: ${rows[0].num}`);
 		return true;
 	} else {
 		console.log('No data found for the specified username.');
