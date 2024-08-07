@@ -30,6 +30,10 @@ app.options('*', async (c) => {
 })
 */
 
+app.get('/', async (c) => {
+	return c.text('It works!')
+})
+
 app.post('/v1/user', async (c) => {
   try {
     const body = await c.req.parseBody();
