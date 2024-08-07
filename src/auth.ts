@@ -13,7 +13,7 @@ auth.use(logger());
 auth.use(
   cors({
     origin: '*',
-    allowMethods: ['GET', 'POST'],
+    allowMethods: ['GET', 'POST', 'OPTIONS', 'DELETE'],
     allowHeaders: ['*'],
   }),
 );
