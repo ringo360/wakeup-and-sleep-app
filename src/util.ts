@@ -276,6 +276,7 @@ export async function IsValidToken(token: string) {
  */
 export function sleep(username: string, date: string) {
   const is = isSleeping(username);
+  console.log(is)
   if (is === false) {
     sleep_db(username, date);
     return {
@@ -306,6 +307,9 @@ export function sleep_db(username: string, date: string) {
     db.exec(
       `insert into SleepData(num, usrname, sleepdate) values('${getnum(username) + 1}', '${username}', '${date}');`,
     );
+	db.exec(
+		`update UserData SET isSleeping = 'true' where usrname = '${username}'`,
+	  );
     return true;
   } catch (e) {
     console.log(e);
@@ -359,8 +363,27 @@ export function wakeup_db(username: string, date: string) {
   db.exec(
     `update SleepData SET wakeupdate = '${date}' where num = '${num}' and usrname = '${username}'`,
   );
+  db.exec(
+	`update UserData SET isSleeping = 'false' where usrname = '${username}'`,
+  );
   console.log('[wakeup] ok!');
   return true;
+}
+
+export function db_deleteOne(username: string) {
+	const selectStmt = db.prepare('SELECT num FROM SleepData WHERE usrname = ? ORDER BY sleepdate ASC LIMIT 1');
+	const row = selectStmt.get(username) as SleepDataRow | undefined;
+	
+	if (row) {
+		// 取得したデータを削除
+		const deleteStmt = db.prepare('DELETE FROM SleepData WHERE num = ?');
+		deleteStmt.run(row.num);
+		console.log(`Deleted record with num: ${row.num}`);
+		return true;
+	} else {
+		console.log('No data found for the specified username.');
+		return false;
+	}
 }
 
 const exp_sec = 600;

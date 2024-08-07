@@ -2,7 +2,7 @@ import { Hono } from 'hono';
 import { serve } from '@hono/node-server';
 import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
-import { addusr, findusr, genRefToken, getSleepData, IsValidToken, sleep } from './util';
+import { addusr, db_deleteOne, findusr, genRefToken, getSleepData, isSleeping, IsValidToken, sleep } from './util';
 import { port } from './config';
 import auth from './auth';
 
@@ -98,6 +98,27 @@ app.get('/find/:user', async (c) => {
   }
 });
 
+app.get('/v1/sleeping', async (c) => {
+	const token = c.req.header('X-Token')
+	const username = c.req.header('X-UserName')
+	if (!token || !username) {
+		//prettier-ignore
+		return c.json({
+			'Result': 'Invalid body.'
+		},400)
+	  }
+	  if (!await IsValidToken(token)) {
+		//prettier-ignore
+		return c.json({
+			'Result': 'Invalid token'
+		}, 400)
+	  }
+	const result = await isSleeping(username)
+	return c.json({
+		'isSleeping': result
+	})
+})
+
 app.get('/v1/sleep', async (c) => {
 	const token = c.req.header('X-Token')
 	const username = c.req.header('X-UserName')
@@ -106,6 +127,12 @@ app.get('/v1/sleep', async (c) => {
     return c.json({
 		'Result': 'Invalid body.'
 	},400)
+  }
+  if (!await IsValidToken(token)) {
+	//prettier-ignore
+	return c.json({
+		'Result': 'Invalid token'
+	}, 400)
   }
   const result = await getSleepData(username as string)
   return c.json(result)
@@ -138,6 +165,32 @@ app.post('/v1/sleep', async (c) => {
     isSleeping: res.isSleeping,
   });
 });
+
+app.delete('/v1/sleep', async (c) => {
+	const token = c.req.header('X-Token')
+	const username = c.req.header('X-UserName')
+  if (!token || !username) {
+    //prettier-ignore
+    return c.json({
+		'Result': 'Invalid body.'
+	},400)
+  }
+  if (!await IsValidToken(token)) {
+	//prettier-ignore
+	return c.json({
+		'Result': 'Invalid token'
+	}, 400)
+  }
+  if (await db_deleteOne(username)) {
+	return c.json({
+		status: 'OK'
+	})
+  } else {
+	return c.json({
+		status: 'Failed'
+	}, 400)
+  }
+})
 
 app.notFound((c) => {
   return c.json(
