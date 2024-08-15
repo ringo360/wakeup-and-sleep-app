@@ -9,14 +9,11 @@ if (!fs.existsSync(db_dir)) {
 export const db = new Database('./db/database.db');
 
 export async function initdb() {
-  // db.exec("drop table if exists UserDB");
-  // db.exec("create table if not exists members(name,age)");
-  // db.exec("create table if not exists UserDB(usrID, devDate, devTime)");
-  // db.exec("create table UserDB(usrID, devDate, devTime)");
+  /* for dev(init db)
   db.exec('drop table if exists UserList');
   db.exec('drop table if exists UserData');
   db.exec('drop table if exists SleepData');
-  // db.exec('create table UserDB(userid INTEGER, displayname TEXT, date DATE)');
+	*/
   db.exec(
     'create table UserList(usrname TEXT, password TEXT, creationdate DATETIME);',
   );

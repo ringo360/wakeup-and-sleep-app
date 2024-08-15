@@ -19,29 +19,31 @@ auth.use(
 );
 
 auth.post('/register', async (c) => {
-	const body = await c.req.parseBody();
-	console.log(body);
-	const { username, password } = body;
-	if (!username || !password) {
-	  console.log('Invalid Req');
-	  return c.json(
-		{
-		  Result: 'Invalid Request',
-		},
-		400,
-	  );
-	}
-	if (existsusr(username as string)) {
-		return c.json({
-			Result: 'Already exists'
-		}, 400)
-	}
-	addusr(username as string, password as string)
-	return c.json({
-		Result: 'Success'
-	})
+  const body = await c.req.parseBody();
+  console.log(body);
+  const { username, password } = body;
+  if (!username || !password) {
+    console.log('Invalid Req');
+    return c.json(
+      {
+        Result: 'Invalid Request',
+      },
+      400,
+    );
+  }
+  if (existsusr(username as string)) {
+    return c.json(
+      {
+        Result: 'Already exists',
+      },
+      400,
+    );
+  }
+  addusr(username as string, password as string);
+  return c.json({
+    Result: 'Success',
   });
-  
+});
 
 auth.post('/login', async (c) => {
   const body = await c.req.parseBody();

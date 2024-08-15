@@ -276,7 +276,7 @@ export async function IsValidToken(token: string) {
  */
 export function sleep(username: string, date: string) {
   const is = isSleeping(username);
-  console.log(is)
+  console.log(is);
   if (is === false) {
     sleep_db(username, date);
     return {
@@ -307,9 +307,9 @@ export function sleep_db(username: string, date: string) {
     db.exec(
       `insert into SleepData(num, usrname, sleepdate) values('${getnum(username) + 1}', '${username}', '${date}');`,
     );
-	db.exec(
-		`update UserData SET isSleeping = 'true' where usrname = '${username}'`,
-	  );
+    db.exec(
+      `update UserData SET isSleeping = 'true' where usrname = '${username}'`,
+    );
     return true;
   } catch (e) {
     console.log(e);
@@ -364,30 +364,34 @@ export function wakeup_db(username: string, date: string) {
     `update SleepData SET wakeupdate = '${date}' where num = '${num}' and usrname = '${username}'`,
   );
   db.exec(
-	`update UserData SET isSleeping = 'false' where usrname = '${username}'`,
+    `update UserData SET isSleeping = 'false' where usrname = '${username}'`,
   );
   console.log('[wakeup] ok!');
   return true;
 }
 
 export function db_deleteOne(username: string) {
-	const selectStmt = db.prepare('SELECT num FROM SleepData WHERE usrname = ? ORDER BY sleepdate ASC');
-  	const rows = selectStmt.all(username) as SleepDataRow[];
-	
-	if (rows.length > 0) {
-		const deleteStmt = db.prepare('DELETE FROM SleepData WHERE num = ? AND usrname = ?');
-		console.log(rows[0])
-		console.log(rows[0].num)
-	    deleteStmt.run(rows[0].num, username);
-	    deleteStmt.run(rows[0].num, username);
-	    deleteStmt.run(rows[0].num, username);
-	    deleteStmt.run(rows[0].num, username);
-		console.log(`Deleted record with num: ${rows[0].num}`);
-		return true;
-	} else {
-		console.log('No data found for the specified username.');
-		return false;
-	}
+  const selectStmt = db.prepare(
+    'SELECT num FROM SleepData WHERE usrname = ? ORDER BY sleepdate ASC',
+  );
+  const rows = selectStmt.all(username) as SleepDataRow[];
+
+  if (rows.length > 0) {
+    const deleteStmt = db.prepare(
+      'DELETE FROM SleepData WHERE num = ? AND usrname = ?',
+    );
+    console.log(rows[0]);
+    console.log(rows[0].num);
+    deleteStmt.run(rows[0].num, username);
+    deleteStmt.run(rows[0].num, username);
+    deleteStmt.run(rows[0].num, username);
+    deleteStmt.run(rows[0].num, username);
+    console.log(`Deleted record with num: ${rows[0].num}`);
+    return true;
+  } else {
+    console.log('No data found for the specified username.');
+    return false;
+  }
 }
 
 const exp_sec = 600;
