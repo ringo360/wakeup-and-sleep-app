@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import { CheckPass, getInfofromRef } from './util';
+import { addusr, CheckPass, existsusr, getInfofromRef } from './util';
 import { logger } from 'hono/logger';
 import { cors } from 'hono/cors';
 import { JWTSecret } from './config';
@@ -17,6 +17,31 @@ auth.use(
     allowHeaders: ['*'],
   }),
 );
+
+auth.post('/register', async (c) => {
+	const body = await c.req.parseBody();
+	console.log(body);
+	const { username, password } = body;
+	if (!username || !password) {
+	  console.log('Invalid Req');
+	  return c.json(
+		{
+		  Result: 'Invalid Request',
+		},
+		400,
+	  );
+	}
+	if (existsusr(username as string)) {
+		return c.json({
+			Result: 'Already exists'
+		}, 400)
+	}
+	addusr(username as string, password as string)
+	return c.json({
+		Result: 'Success'
+	})
+  });
+  
 
 auth.post('/login', async (c) => {
   const body = await c.req.parseBody();
