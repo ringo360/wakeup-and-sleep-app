@@ -370,6 +370,12 @@ export function wakeup_db(username: string, date: string) {
   return true;
 }
 
+
+/**
+ * [WARNING] このfunctionは動作しません。(バグを引き起こします。)
+ * @param username 
+ * @returns boolean
+ */
 export function db_deleteOne(username: string) {
   const selectStmt = db.prepare(
     'SELECT num FROM SleepData WHERE usrname = ? ORDER BY sleepdate ASC',

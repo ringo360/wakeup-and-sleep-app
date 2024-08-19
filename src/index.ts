@@ -5,7 +5,6 @@
 import { ConfigChecker } from './config';
 import { db, initdb } from './db';
 import { addusr } from './util'; //dev
-import './websv';
 import { websv } from './websv';
 
 /**
@@ -28,8 +27,9 @@ async function init() {
 }
 
 async function main() {
-  console.log('Loading...');
-  await init();
+  console.log('[MAIN] Called');
+  await import('./websv')
+//   await init(); dev
 }
 
 //call
