@@ -370,6 +370,16 @@ export function wakeup_db(username: string, date: string) {
   return true;
 }
 
+export function breakfast_db(username: string, bool: boolean, num: number) {
+  try {
+    db.exec(`update SleepData SET atebreakfast = '${bool}' where num = '${num}' and usrname = '${username}'`)
+    return true
+  } catch (e) {
+    console.error(e)
+    return false
+  }
+}
+
 
 /**
  * [WARNING] このfunctionは動作しません。(バグを引き起こします。)
