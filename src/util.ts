@@ -277,14 +277,14 @@ export async function IsValidToken(token: string) {
 export function sleep(username: string, date: string) {
   const is = isSleeping(username);
   console.log(is);
-  if (is === false) {
+  if (is === true) {
     sleep_db(username, date);
     return {
       success: true,
       isSleeping: is,
     };
   }
-  if (is === true) {
+  if (is === false) {
     wakeup_db(username, date);
     return {
       success: true,
