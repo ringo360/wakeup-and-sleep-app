@@ -184,7 +184,7 @@ export function isSleeping(username: string) {
   const result = db
     .prepare(
       `
-    SELECT CASE WHEN EXISTS(SELECT 1 FROM UserData WHERE usrname = ? AND isSleeping = 'true') THEN 1 ELSE 0 END
+    SELECT CASE WHEN EXISTS(SELECT 1 FROM UserData WHERE usrname = ? AND isSleeping = 'false') THEN 1 ELSE 0 END
   `,
     )
     .get(username);
