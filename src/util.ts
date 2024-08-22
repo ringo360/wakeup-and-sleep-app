@@ -171,7 +171,7 @@ export function addusr(username: string, password: string) {
       `insert into UserList(usrname, password, creationdate) values('${username}', '${password}', '${getJSTDate(new Date())}');`,
     );
     db.exec(
-      `insert into UserData(usrname, isSleeping) values('${username}', 'false')`,
+      `insert into UserData(usrname, isSleeping) values('${username}', 'true')`,
     );
     // db.exec(`update UserData SET isSleeping = 'true' where usrname = '${username}'`)
     isSleeping(username);
@@ -184,7 +184,7 @@ export function isSleeping(username: string) {
   const result = db
     .prepare(
       `
-    SELECT CASE WHEN EXISTS(SELECT 1 FROM UserData WHERE usrname = ? AND isSleeping = 'false') THEN 1 ELSE 0 END
+    SELECT CASE WHEN EXISTS(SELECT 1 FROM UserData WHERE usrname = ? AND isSleeping = 'true') THEN 1 ELSE 0 END
   `,
     )
     .get(username);
@@ -192,7 +192,7 @@ export function isSleeping(username: string) {
   const resAsAny = result as any;
   const exists =
     resAsAny[
-      "CASE WHEN EXISTS(SELECT 1 FROM UserData WHERE usrname = ? AND isSleeping = 'false') THEN 1 ELSE 0 END"
+      "CASE WHEN EXISTS(SELECT 1 FROM UserData WHERE usrname = ? AND isSleeping = 'true') THEN 1 ELSE 0 END"
     ];
   if (exists == 0) return false;
   if (exists == 1) return true;
