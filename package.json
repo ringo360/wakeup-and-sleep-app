@@ -2,7 +2,7 @@
   "scripts": {
     "start": "tsx src/index.ts",
     "dev": "tsx watch src/index.ts",
-    "init": "tsx src/init.ts",
+    "was-init": "tsx src/init.ts",
     "format": "prettier --write ./src/*.ts"
   },
   "dependencies": {
