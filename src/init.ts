@@ -8,3 +8,5 @@ async function main() {
     await initdb()
     console.log('[DB] OK')
 }
+
+main()
