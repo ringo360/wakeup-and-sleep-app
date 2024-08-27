@@ -11,6 +11,8 @@ import {
   isSleeping,
   IsValidToken,
   sleep,
+  sleep_db,
+  wakeup_db,
 } from './util';
 import { port } from './config';
 import auth from './auth';
@@ -151,6 +153,33 @@ app.get('/v1/sleep', async (c) => {
   return c.json(result);
 });
 
+app.post('/v1/wakeup', async (c) => {
+	const body = await c.req.parseBody();
+	const { token, username, date } = body;
+	//dateは2024/07/23 | 23:30 | 6:30 の形にする。('|' で区切りやすくする)
+	if (!token || !username || !date) {
+	  //prettier-ignore
+	  return c.json({
+		'Result': 'Invalid body.'
+	  },400)
+	}
+	if ((await IsValidToken(token as string)) === false)
+	  //prettier-ignore
+	  return c.json({
+		Result: 'Invalid token.',
+	  },400);
+	const res = await wakeup_db(username as string, date as string);
+	if (!res) {
+	  //prettier-ignore
+	  return c.json({
+		  error: 'Database returned false response',
+		},500);
+	}
+	return c.json({
+	  status: 'OK'
+	});
+  });
+
 app.post('/v1/sleep', async (c) => {
   const body = await c.req.parseBody();
   const { token, username, date } = body;
@@ -166,16 +195,15 @@ app.post('/v1/sleep', async (c) => {
     return c.json({
       Result: 'Invalid token.',
     },400);
-  const res = await sleep(username as string, date as string);
-  if (!res?.success) {
+  const res = await sleep_db(username as string, date as string);
+  if (!res) {
     //prettier-ignore
     return c.json({
         error: 'Database returned false response',
       },500);
   }
   return c.json({
-    status: 'OK',
-    isSleeping: res.isSleeping,
+    status: 'OK'
   });
 });
 
