@@ -310,9 +310,9 @@ export function sleep_db(username: string, date: string) {
 		console.log(`Err: num is ${num}`);
 		return false;
 	}
-    db.exec(
-		`update SleepData SET sleepdate = '${date}' where num = '${num}' and usrname = '${username}'`,
-	  );
+	db.exec(
+		`insert into SleepData(num, usrname, sleepdate) values('${getnum(username) + 1}', '${username}', '${date}');`,
+	);
     db.exec(
       `update UserData SET isSleeping = 'true' where usrname = '${username}'`,
     );
