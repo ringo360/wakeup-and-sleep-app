@@ -4,6 +4,7 @@ import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
 import {
   addusr,
+  breakfast_db,
   db_deleteOne,
   findusr,
   genRefToken,
@@ -12,6 +13,7 @@ import {
   IsValidToken,
   sleep,
   sleep_db,
+  StrtoBool,
   wakeup_db,
 } from './util';
 import { port } from './config';
@@ -206,6 +208,33 @@ app.post('/v1/sleep', async (c) => {
     status: 'OK'
   });
 });
+
+app.post('/v1/breakfast', async (c) => {
+	const body = await c.req.parseBody();
+	const { token, username, bool } = body;
+	//dateは2024/07/23 | 23:30 | 6:30 の形にする。('|' で区切りやすくする)
+	if (!token || !username || !bool) {
+	  //prettier-ignore
+	  return c.json({
+		'Result': 'Invalid body.'
+	  },400)
+	}
+	if ((await IsValidToken(token as string)) === false)
+	  //prettier-ignore
+	  return c.json({
+		Result: 'Invalid token.',
+	  },400);
+	const res = await breakfast_db(username as string, StrtoBool(bool as string))
+	if (!res) {
+	  //prettier-ignore
+	  return c.json({
+		  error: 'Database returned false response',
+		},500);
+	}
+	return c.json({
+	  status: 'OK'
+	});
+})
 
 app.delete('/v1/sleep', async (c) => {
   const token = c.req.header('X-Token');
