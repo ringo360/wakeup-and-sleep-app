@@ -321,23 +321,25 @@ type SleepDataRow = {
   num: number;
   sleepdate: string;
   wakeupdate: string;
+  atebreakfast: boolean;
 };
 
 export function getSleepData(username: string): {
   [key: number]: { sleepdate: string; wakeupdate: string };
 } {
   const stmt = db.prepare(
-    'SELECT num, sleepdate, wakeupdate FROM SleepData WHERE usrname = ?',
+    'SELECT num, sleepdate, wakeupdate, atebreakfast FROM SleepData WHERE usrname = ?',
   );
   const rows = stmt.all(username) as SleepDataRow[];
 
   // JSON形式に変換
-  const result: { [key: number]: { sleepdate: string; wakeupdate: string } } =
+  const result: { [key: number]: { sleepdate: string; wakeupdate: string; breakfast: boolean } } =
     {};
   rows.forEach((row) => {
     result[row.num] = {
       sleepdate: row.sleepdate,
       wakeupdate: row.wakeupdate,
+      breakfast: row.atebreakfast
     };
   });
 
