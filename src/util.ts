@@ -379,22 +379,14 @@ export function wakeup_db(username: string, date: string) {
 
 export function breakfast_db(username: string, bool: boolean) {
   try {
-<<<<<<< HEAD
     db.exec(`update SleepData SET atebreakfast = '${bool}' where num = '${getnum(username)}' and usrname = '${username}'`)
     return true
-=======
-    db.exec(
-      `update SleepData SET atebreakfast = '${bool}' where num = '${num}' and usrname = '${username}'`,
-    );
-    return true;
->>>>>>> 75e4321fc5e407d8663d9a4177815eae52cda12d
   } catch (e) {
     console.error(e);
     return false;
   }
 }
 
-<<<<<<< HEAD
 /**
  * 文字列で"true"だったり"false"だったりする場合にそれをboolになおします。
  * @param str 文字列
@@ -404,8 +396,6 @@ export function StrtoBool(str: string): boolean {
 	return str.toLocaleLowerCase() === "true"
 }
 
-=======
->>>>>>> 75e4321fc5e407d8663d9a4177815eae52cda12d
 /**
  * [WARNING] このfunctionは動作しません。(バグを引き起こします。)
  * @param username
