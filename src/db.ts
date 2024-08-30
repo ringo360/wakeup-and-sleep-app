@@ -15,7 +15,9 @@ export async function initdb() {
   db.exec(
     'create table UserList(usrname TEXT, password TEXT, creationdate DATETIME);',
   );
-  db.exec('create table UserData(usrname TEXT, isSleeping BOOLEAN, LoginDays INT);');
+  db.exec(
+    'create table UserData(usrname TEXT, isSleeping BOOLEAN, LoginDays INT);',
+  );
   db.exec(
     'create table SleepData(num INTEGER, usrname TEXT, sleepdate DATETIME, wakeupdate DATETIME, atebreakfast BOOLEAN);',
   );
