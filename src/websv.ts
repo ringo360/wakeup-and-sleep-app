@@ -150,6 +150,7 @@ app.get('/v1/sleep', async (c) => {
 	}, 400)
   }
   const result = await getSleepData(username as string);
+  console.log(result)
   return c.json(result);
 });
 
