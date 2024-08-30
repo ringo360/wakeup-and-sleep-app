@@ -333,13 +333,18 @@ export function getSleepData(username: string): {
   const rows = stmt.all(username) as SleepDataRow[];
 
   // JSON形式に変換
-  const result: { [key: number]: { sleepdate: string; wakeupdate: string; breakfast: boolean } } =
-    {};
+  const result: {
+    [key: number]: {
+      sleepdate: string;
+      wakeupdate: string;
+      breakfast: boolean;
+    };
+  } = {};
   rows.forEach((row) => {
     result[row.num] = {
       sleepdate: row.sleepdate,
       wakeupdate: row.wakeupdate,
-      breakfast: row.atebreakfast
+      breakfast: row.atebreakfast,
     };
   });
 
@@ -374,18 +379,19 @@ export function wakeup_db(username: string, date: string) {
 
 export function breakfast_db(username: string, bool: boolean, num: number) {
   try {
-    db.exec(`update SleepData SET atebreakfast = '${bool}' where num = '${num}' and usrname = '${username}'`)
-    return true
+    db.exec(
+      `update SleepData SET atebreakfast = '${bool}' where num = '${num}' and usrname = '${username}'`,
+    );
+    return true;
   } catch (e) {
-    console.error(e)
-    return false
+    console.error(e);
+    return false;
   }
 }
 
-
 /**
  * [WARNING] このfunctionは動作しません。(バグを引き起こします。)
- * @param username 
+ * @param username
  * @returns boolean
  */
 export function db_deleteOne(username: string) {

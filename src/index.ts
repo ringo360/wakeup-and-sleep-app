@@ -28,8 +28,8 @@ async function init() {
 
 async function main() {
   console.log('[MAIN] Called');
-  await import('./websv')
-//   await init(); dev
+  await import('./websv');
+  //   await init(); dev
 }
 
 //call
