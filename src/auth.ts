@@ -11,6 +11,7 @@ const auth = new Hono();
 auth.use(logger());
 
 auth.use(
+  '*',
   cors({
     origin: '*',
     allowMethods: ['GET', 'POST', 'OPTIONS', 'DELETE'],

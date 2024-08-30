@@ -304,9 +304,15 @@ export function sleep(username: string, date: string) {
 export function sleep_db(username: string, date: string) {
   //TODO: 努力
   try {
-    db.exec(
-      `insert into SleepData(num, usrname, sleepdate) values('${getnum(username) + 1}', '${username}', '${date}');`,
-    );
+	const num = getnum(username);
+	console.log(`[sleep] update ${username} - ${num}`);
+	if (num < 0) {
+		console.log(`Err: num is ${num}`);
+		return false;
+	}
+	db.exec(
+		`insert into SleepData(num, usrname, sleepdate) values('${getnum(username) + 1}', '${username}', '${date}');`,
+	);
     db.exec(
       `update UserData SET isSleeping = 'true' where usrname = '${username}'`,
     );
@@ -361,14 +367,8 @@ export function wakeup_db(username: string, date: string) {
   //TODO: やりましょう
   //ex UPDATE 家計簿 SET 出金額　= 1500 WHERE 日付 = '2021-08-03'
   console.log('[wakeup] called');
-  const num = getnum(username);
-  console.log(`[wakeup] update ${username} - ${num}`);
-  if (num < 0) {
-    console.log(`Err: num is ${num}`);
-    return false;
-  }
   db.exec(
-    `update SleepData SET wakeupdate = '${date}' where num = '${num}' and usrname = '${username}'`,
+	`insert into SleepData(num, usrname, wakeupdate) values('${getnum(username) + 1}', '${username}', '${date}');`,
   );
   db.exec(
     `update UserData SET isSleeping = 'false' where usrname = '${username}'`,
